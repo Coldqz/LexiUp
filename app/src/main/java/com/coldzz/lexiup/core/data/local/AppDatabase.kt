@@ -1,4 +1,4 @@
-package com.coldzz.lexiup.core.database.local
+package com.coldzz.lexiup.core.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

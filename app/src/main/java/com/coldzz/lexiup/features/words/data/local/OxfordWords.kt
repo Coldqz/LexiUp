@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class OxfordWords(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val word: String,
-    @ColumnInfo(name = "part_of_speech") val partOfSpeech: String,
+    @ColumnInfo(name = "part_of_speech") val partOfSpeech: String = "",
     val level: LevelCerf,
     @ColumnInfo(name = "is_learned") val isLearned: Boolean = false
 )
