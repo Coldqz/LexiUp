@@ -66,4 +66,6 @@ dependencies {
     implementation(libs.dagger.hilt.android)
     ksp(libs.hilt.android.compiler)
 
+    implementation(libs.moshi.kotlin)
+
 }
