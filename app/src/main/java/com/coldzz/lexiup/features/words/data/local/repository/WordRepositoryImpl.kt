@@ -1,10 +1,11 @@
-package com.coldzz.lexiup.core.data.repository
+package com.coldzz.lexiup.features.words.data.local.repository
 
 import com.coldzz.lexiup.core.data.local.WordDao
 import com.coldzz.lexiup.core.domain.repository.WordRepository
 import com.coldzz.lexiup.features.words.data.local.OxfordWords
+import javax.inject.Inject
 
-class WordRepositoryImpl(val dao: WordDao): WordRepository {
+class WordRepositoryImpl @Inject constructor(private val dao: WordDao): WordRepository {
     override suspend fun insertAllWords(wordsList: List<OxfordWords>) {
         TODO("Not yet implemented")
     }
@@ -12,4 +13,5 @@ class WordRepositoryImpl(val dao: WordDao): WordRepository {
     override suspend fun addWord(word: OxfordWords) {
         return dao.addWord(word)
     }
+
 }

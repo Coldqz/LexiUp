@@ -3,17 +3,14 @@ package com.coldzz.lexiup.core.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.SQLiteConnection
-import androidx.work.OneTimeWorkRequestBuilder
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.coldzz.lexiup.core.Constants
 import com.coldzz.lexiup.core.data.local.AppDatabase
-import com.coldzz.lexiup.core.data.local.WordDao
-import com.coldzz.lexiup.core.data.repository.WordRepositoryImpl
 import com.coldzz.lexiup.core.domain.repository.WordRepository
 import com.coldzz.lexiup.core.workers.PopulateDataWorker
-import com.coldzz.lexiup.core.workers.PopulateDataWorker.Companion.KEY_FILENAME
+import com.coldzz.lexiup.features.words.data.local.repository.WordRepositoryImpl
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -26,6 +23,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataModule {
 
+
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
@@ -34,28 +32,21 @@ object DataModule {
             klass = AppDatabase::class.java,
             name = Constants.DATABASE_NAME
         ).addCallback(
-            object: RoomDatabase.Callback() {
-                override fun onCreate(connection: SQLiteConnection) {
-                    super.onCreate(connection)
-                    val request = OneTimeWorkRequestBuilder<PopulateDataWorker>()
-                        .setInputData(workDataOf(KEY_FILENAME to Constants.WORDS_JSON))
-                        .build()
-                    WorkManager.getInstance(context).enqueue(request)
+            object : RoomDatabase.Callback() {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    // Creates and schedule inserting initial data into the db right on db creation
+                    val workRequest = OneTimeWorkRequest.Builder(PopulateDataWorker::class.java).build()
+                    WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
                 }
             }
-        )
-            .build()
-    }
-
-    @Provides
-    fun provideWordsDao(database: AppDatabase): WordDao {
-        return database.wordDao()
+        ).build()
     }
 
     @Provides
     @Singleton
-    fun provideWordRepository(dao: WordDao): WordRepository {
-        return WordRepositoryImpl(dao)
+    fun provideWordRepository(database: AppDatabase): WordRepository {
+        return WordRepositoryImpl(database.wordDao())
     }
 
     @Provides
