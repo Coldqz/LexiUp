@@ -7,11 +7,11 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.coldzz.lexiup.core.common.Constants
 import com.coldzz.lexiup.features.words.data.local.prepopulate.WordsPrepopulatedModel
-import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.coldzz.lexiup.features.words.domain.model.LevelCerf
 import com.coldzz.lexiup.features.words.domain.model.OxfordWords
-import com.squareup.moshi.JsonAdapter
+import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -29,29 +29,30 @@ class PopulateDataWorker @AssistedInject constructor(
         Log.i(TAG, "Work request triggered")
         try {
             // reading data from json file
-            val jsonAdapter: JsonAdapter<WordsPrepopulatedModel> =
-                moshi.adapter(WordsPrepopulatedModel::class.java)
+            val type = Types.newParameterizedType(List::class.java, WordsPrepopulatedModel::class.java)
+            val jsonAdapter = moshi.adapter<List<WordsPrepopulatedModel>>(type)
             val wordsString = applicationContext.assets.open(Constants.WORDS_JSON).bufferedReader()
                 .use { it.readText() }
-            val words = jsonAdapter.fromJson(wordsString)
+            val wordsList = jsonAdapter.fromJson(wordsString)
 
             // creating list of OxfordWords out of json to bulk insert it into the db
-            val wordsList = mutableListOf<OxfordWords>()
-            words?.let {
-                val levels = listOf(
-                    LevelCerf.A1 to it.a1,
-                    LevelCerf.A2 to it.a2,
-                    LevelCerf.B1 to it.b1,
-                    LevelCerf.B2 to it.b2
+            wordsList?.map { element ->
+                OxfordWords(
+                    word = element.word,
+                    partOfSpeech = element.partOfSpeech,
+                    level = when (element.level) {
+                        "a1" -> LevelCerf.A1
+                        "a2" -> LevelCerf.A2
+                        "b1" -> LevelCerf.B1
+                        "b2" -> LevelCerf.B2
+                        "c1" -> LevelCerf.C1
+                        "c2" -> LevelCerf.C2
+                        else -> throw IllegalArgumentException("Unknown cerf level: ${element.level}, word: ${element.word}")
+                    }
                 )
-
-                levels.flatMap { (level, elements) ->
-                    elements.map { word -> OxfordWords(word = word, level = level) }
-                }.let { generatedWords ->
-                    wordsList.addAll(generatedWords)
-                }
+            }?.let { generatedWords ->
+                repository.insertAllWords(generatedWords)
             }
-            repository.insertAllWords(wordsList)
 
             Log.i(TAG, "Work request ended")
             Result.success()
