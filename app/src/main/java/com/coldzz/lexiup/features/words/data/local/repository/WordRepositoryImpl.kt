@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class WordRepositoryImpl @Inject constructor(private val dao: WordDao): WordRepository {
     override suspend fun insertAllWords(wordsList: List<OxfordWords>) {
-        TODO("Not yet implemented")
+        return dao.insertAllWords(wordsList)
     }
 
     override suspend fun addWord(word: OxfordWords) {
