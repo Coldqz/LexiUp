@@ -1,25 +1,21 @@
 package com.coldzz.lexiup.core.workers
 
 import android.content.Context
-import android.os.Environment
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.coldzz.lexiup.core.Constants
-import com.coldzz.lexiup.core.data.local.prepopulate.WordsPrepopulatedModel
-import com.coldzz.lexiup.core.domain.repository.WordRepository
-import com.coldzz.lexiup.features.words.data.local.LevelCerf
-import com.coldzz.lexiup.features.words.data.local.OxfordWords
-import com.squareup.moshi.Json
+import com.coldzz.lexiup.core.common.Constants
+import com.coldzz.lexiup.features.words.data.local.prepopulate.WordsPrepopulatedModel
+import com.coldzz.lexiup.features.words.domain.repository.WordRepository
+import com.coldzz.lexiup.features.words.domain.model.LevelCerf
+import com.coldzz.lexiup.features.words.domain.model.OxfordWords
 import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 
 // worker for populating db with data from json file on background thread
 @HiltWorker

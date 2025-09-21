@@ -1,4 +1,4 @@
-package com.coldzz.lexiup.features.words.data.local
+package com.coldzz.lexiup.features.words.domain.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -6,18 +6,19 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "word_definitions",
+    tableName = "word_details",
     foreignKeys = [
         ForeignKey(
-            entity = WordDetails::class,
+            entity = OxfordWords::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("word_id"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class WordDefinitions(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+data class WordDetails(
+    @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "word_id") val wordId: Int,
-    val definition: String
+    @ColumnInfo(name = "audio_us") val audioUs: String,
+    @ColumnInfo(name = "audio_uk") val audioUk: String,
 )

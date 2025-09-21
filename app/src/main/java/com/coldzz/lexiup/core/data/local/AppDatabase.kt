@@ -5,11 +5,12 @@ import androidx.room.RoomDatabase
 import com.coldzz.lexiup.features.blocks.data.local.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.WordBlockOxfordWords
 import com.coldzz.lexiup.features.profile.data.local.UserStats
-import com.coldzz.lexiup.features.words.data.local.GptAnswers
-import com.coldzz.lexiup.features.words.data.local.OxfordWords
-import com.coldzz.lexiup.features.words.data.local.WordDefinitions
-import com.coldzz.lexiup.features.words.data.local.WordDetails
-import com.coldzz.lexiup.features.words.data.local.WordExamples
+import com.coldzz.lexiup.features.words.domain.model.GptAnswers
+import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.WordDao
+import com.coldzz.lexiup.features.words.domain.model.WordDefinitions
+import com.coldzz.lexiup.features.words.domain.model.WordDetails
+import com.coldzz.lexiup.features.words.domain.model.WordExamples
 
 @Database(
     entities = [

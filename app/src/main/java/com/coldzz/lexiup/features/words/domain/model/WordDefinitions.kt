@@ -1,4 +1,4 @@
-package com.coldzz.lexiup.features.words.data.local
+package com.coldzz.lexiup.features.words.domain.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "word_examples",
+    tableName = "word_definitions",
     foreignKeys = [
         ForeignKey(
             entity = WordDetails::class,
@@ -16,8 +16,8 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class WordExamples(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+data class WordDefinitions(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "word_id") val wordId: Int,
-    val example: String
+    val definition: String
 )

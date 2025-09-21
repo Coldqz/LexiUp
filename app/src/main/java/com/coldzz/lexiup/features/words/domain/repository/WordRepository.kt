@@ -1,6 +1,6 @@
-package com.coldzz.lexiup.core.domain.repository
+package com.coldzz.lexiup.features.words.domain.repository
 
-import com.coldzz.lexiup.features.words.data.local.OxfordWords
+import com.coldzz.lexiup.features.words.domain.model.OxfordWords
 
 interface WordRepository {
 

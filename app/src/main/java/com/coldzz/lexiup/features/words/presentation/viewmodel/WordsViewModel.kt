@@ -1,11 +1,11 @@
-package com.coldzz.lexiup.core
+package com.coldzz.lexiup.features.words.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coldzz.lexiup.core.domain.repository.WordRepository
-import com.coldzz.lexiup.features.words.data.local.LevelCerf
-import com.coldzz.lexiup.features.words.data.local.OxfordWords
+import com.coldzz.lexiup.features.words.domain.model.LevelCerf
+import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

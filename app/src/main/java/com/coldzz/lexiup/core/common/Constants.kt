@@ -1,4 +1,4 @@
-package com.coldzz.lexiup.core
+package com.coldzz.lexiup.core.common
 
 object Constants {
     const val DATABASE_NAME = "words-db"

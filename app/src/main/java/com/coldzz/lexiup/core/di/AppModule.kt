@@ -6,9 +6,9 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import com.coldzz.lexiup.core.Constants
+import com.coldzz.lexiup.core.common.Constants
 import com.coldzz.lexiup.core.data.local.AppDatabase
-import com.coldzz.lexiup.core.domain.repository.WordRepository
+import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.coldzz.lexiup.core.workers.PopulateDataWorker
 import com.coldzz.lexiup.features.words.data.local.repository.WordRepositoryImpl
 import com.squareup.moshi.Moshi
@@ -21,7 +21,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataModule {
+object AppModule {
 
 
     @Provides

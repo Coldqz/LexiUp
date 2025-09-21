@@ -1,4 +1,4 @@
-package com.coldzz.lexiup.core.data.local.prepopulate
+package com.coldzz.lexiup.features.words.data.local.prepopulate
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.coldzz.lexiup.features.words.data.local.OxfordWords
+import com.coldzz.lexiup.features.words.domain.model.OxfordWords
 
 @Entity(
     tableName = "word_block_oxford_words",

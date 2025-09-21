@@ -1,4 +1,4 @@
-package com.coldzz.lexiup.features.words.data.local
+package com.coldzz.lexiup.features.words.domain.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
