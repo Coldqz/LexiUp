@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LexiUp</string>
+    <string name="word_icon">Word icon</string>
 </resources>
