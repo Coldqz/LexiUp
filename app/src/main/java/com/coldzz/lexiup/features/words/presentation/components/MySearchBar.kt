@@ -1,0 +1,127 @@
+package com.coldzz.lexiup.features.words.presentation.components
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults.InputField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.coldzz.lexiup.R
+import com.coldzz.lexiup.features.words.domain.model.LevelCerf
+import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import kotlin.math.exp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MySearchBar(
+    onSearch: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    dataForSearch: List<OxfordWords>
+) {
+    // Controls expansion state of the search bar
+    var expanded by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
+
+    val filteredList: List<OxfordWords> = remember(query) {
+        if (query.isBlank()) emptyList()
+        else dataForSearch.asSequence()
+            .filter { it.word.contains(query, ignoreCase = true) }
+            .take(10)
+            .toList()
+    }
+
+    SearchBar(
+        modifier = modifier,
+        inputField = {
+            InputField(
+                query = query,
+                onQueryChange = { query = it },
+                onSearch = { expanded = false },
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.search_icon)
+                    )
+                },
+                placeholder = {
+                    Text(
+                        text = "Search words"
+                    )
+                },
+            )
+        },
+        expanded = expanded,
+        onExpandedChange = { expanded = it })
+    {
+        if (filteredList.isNotEmpty()) {
+            LazyColumn {
+                items(filteredList) { element ->
+                    WordsListElement(
+                        title = element.word,
+                        level = element.level,
+                        partOfSpeech = element.partOfSpeech,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun MySearchBarPreview() {
+    val fakeWordsList = mutableListOf(
+        OxfordWords(word = "discover", partOfSpeech = "noun", level = LevelCerf.A2),
+        OxfordWords(word = "swim", partOfSpeech = "verb", level = LevelCerf.A1),
+        OxfordWords(word = "run", partOfSpeech = "verb", level = LevelCerf.A2),
+        OxfordWords(word = "raw", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(word = "bunny", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(word = "pencil", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(word = "wooden", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(word = "wood", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(word = "hall", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(word = "town", partOfSpeech = "adjective", level = LevelCerf.C1),
+    )
+    MySearchBar(
+        { },
+        modifier = Modifier,
+        dataForSearch = fakeWordsList
+    )
+
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun TestPreview() {
+    var expanded by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
+
+    SearchBar(inputField = {
+        InputField(
+            query = query,
+            onQueryChange = { query = it },
+            onSearch = {},
+            expanded = expanded,
+            onExpandedChange = { expanded = it })
+    }, expanded = expanded, onExpandedChange = { expanded = it }) { }
+}

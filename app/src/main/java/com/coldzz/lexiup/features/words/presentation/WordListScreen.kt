@@ -1,21 +1,23 @@
 package com.coldzz.lexiup.features.words.presentation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coldzz.lexiup.features.words.domain.model.LevelCerf
 import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.presentation.components.MySearchBar
+import com.coldzz.lexiup.features.words.presentation.components.WordsListElement
 import com.coldzz.lexiup.features.words.presentation.viewmodel.WordsListViewModel
 
 @Composable
@@ -31,11 +33,17 @@ private fun WordListScreenContent(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text("Oxford 5000", style = MaterialTheme.typography.titleLarge)
-                }
-            )
+            Box(
+                Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                MySearchBar(
+                    onSearch = {},
+                    dataForSearch = wordsList
+                )
+
+            }
+
         }
     ) { paddingValues ->
         LazyColumn(
@@ -52,14 +60,17 @@ private fun WordListScreenContent(
     }
 }
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun WordListScreenPreview() {
-    val fakeWordsList = listOf(
+    val fakeWordsList = mutableListOf(
         OxfordWords(word = "discover", partOfSpeech = "noun", level = LevelCerf.A2),
         OxfordWords(word = "swim", partOfSpeech = "verb", level = LevelCerf.A1),
         OxfordWords(word = "run", partOfSpeech = "verb", level = LevelCerf.A2),
         OxfordWords(word = "funny", partOfSpeech = "adjective", level = LevelCerf.C1),
     )
+    fakeWordsList.addAll(fakeWordsList)
+    fakeWordsList.addAll(fakeWordsList)
+    fakeWordsList.addAll(fakeWordsList)
     WordListScreenContent(fakeWordsList)
 }

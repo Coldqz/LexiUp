@@ -1,4 +1,4 @@
-package com.coldzz.lexiup.features.words.presentation
+package com.coldzz.lexiup.features.words.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
