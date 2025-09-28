@@ -13,12 +13,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coldzz.lexiup.features.words.domain.model.LevelCerf
 import com.coldzz.lexiup.features.words.domain.model.OxfordWords
 import com.coldzz.lexiup.features.words.presentation.components.MySearchBar
 import com.coldzz.lexiup.features.words.presentation.components.WordsListElement
 import com.coldzz.lexiup.features.words.presentation.viewmodel.WordsListViewModel
+import kotlin.random.Random
 
 @Composable
 fun WordListScreen(wordsListViewModel: WordsListViewModel = hiltViewModel()) {
@@ -34,7 +36,9 @@ private fun WordListScreenContent(
     Scaffold(
         topBar = {
             Box(
-                Modifier.fillMaxWidth(),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
                 MySearchBar(
@@ -49,11 +53,16 @@ private fun WordListScreenContent(
         LazyColumn(
             Modifier.padding(paddingValues)
         ) {
-            items(wordsList) { element ->
+            items(
+                wordsList,
+                key = { word ->
+                    word.id
+                }
+            ) { word ->
                 WordsListElement(
-                    title = element.word,
-                    level = element.level,
-                    partOfSpeech = element.partOfSpeech
+                    title = word.word,
+                    level = word.level,
+                    partOfSpeech = word.partOfSpeech
                 )
             }
         }
@@ -64,13 +73,17 @@ private fun WordListScreenContent(
 @Composable
 private fun WordListScreenPreview() {
     val fakeWordsList = mutableListOf(
-        OxfordWords(word = "discover", partOfSpeech = "noun", level = LevelCerf.A2),
-        OxfordWords(word = "swim", partOfSpeech = "verb", level = LevelCerf.A1),
-        OxfordWords(word = "run", partOfSpeech = "verb", level = LevelCerf.A2),
-        OxfordWords(word = "funny", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(id = Random.nextInt(), word = "discover", partOfSpeech = "noun", level = LevelCerf.A2),
+        OxfordWords(id = Random.nextInt(), word = "swim", partOfSpeech = "verb", level = LevelCerf.A1),
+        OxfordWords(id = Random.nextInt(), word = "run", partOfSpeech = "verb", level = LevelCerf.A2),
+        OxfordWords(id = Random.nextInt(), word = "funny", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(id = Random.nextInt(), word = "dummy", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(id = Random.nextInt(), word = "window", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(id = Random.nextInt(), word = "fun", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(id = Random.nextInt(), word = "dog", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(id = Random.nextInt(), word = "rabbit", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(id = Random.nextInt(), word = "running", partOfSpeech = "adjective", level = LevelCerf.C1),
+        OxfordWords(id = Random.nextInt(), word = "sand", partOfSpeech = "adjective", level = LevelCerf.C1),
     )
-    fakeWordsList.addAll(fakeWordsList)
-    fakeWordsList.addAll(fakeWordsList)
-    fakeWordsList.addAll(fakeWordsList)
     WordListScreenContent(fakeWordsList)
 }
