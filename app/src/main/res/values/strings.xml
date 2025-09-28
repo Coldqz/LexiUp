@@ -2,4 +2,5 @@
     <string name="app_name">LexiUp</string>
     <string name="word_icon">Word icon</string>
     <string name="search_icon">Search icon</string>
+    <string name="back_icon">Back icon</string>
 </resources>
