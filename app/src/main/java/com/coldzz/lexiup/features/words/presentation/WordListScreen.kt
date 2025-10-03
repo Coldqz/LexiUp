@@ -1,5 +1,6 @@
 package com.coldzz.lexiup.features.words.presentation
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import com.coldzz.lexiup.features.words.domain.model.OxfordWords
 import com.coldzz.lexiup.features.words.presentation.components.MySearchBar
 import com.coldzz.lexiup.features.words.presentation.components.WordsListElement
 import com.coldzz.lexiup.features.words.presentation.viewmodel.WordsListViewModel
+import com.coldzz.lexiup.ui.theme.LexiUpTheme
 import kotlin.random.Random
 
 @Composable
@@ -69,7 +71,10 @@ private fun WordListScreenContent(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
+@Preview(showBackground = true, showSystemUi = true,)
 @Composable
 private fun WordListScreenPreview() {
     val fakeWordsList = mutableListOf(
@@ -85,5 +90,7 @@ private fun WordListScreenPreview() {
         OxfordWords(id = Random.nextInt(), word = "running", partOfSpeech = "adjective", level = LevelCerf.C1),
         OxfordWords(id = Random.nextInt(), word = "sand", partOfSpeech = "adjective", level = LevelCerf.C1),
     )
-    WordListScreenContent(fakeWordsList)
+    LexiUpTheme {
+        WordListScreenContent(fakeWordsList)
+    }
 }
