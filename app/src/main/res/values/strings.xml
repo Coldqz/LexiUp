@@ -3,4 +3,6 @@
     <string name="word_icon">Word icon</string>
     <string name="search_icon">Search icon</string>
     <string name="back_icon">Back icon</string>
+    <string name="start">Start</string>
+    <string name="learning_level_icon">Learning level icon</string>
 </resources>

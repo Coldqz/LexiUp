@@ -71,13 +71,13 @@ fun MySearchBar(
                         ) {
                             // We need to use arrowForward because of rotating animation
                             Icon(
-                                Icons.AutoMirrored.Default.ArrowForward,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = stringResource(R.string.back_icon),
                             )
                         }
                     } else {
                         Icon(
-                            Icons.Default.Search,
+                            imageVector = Icons.Default.Search,
                             contentDescription = stringResource(R.string.search_icon),
                             modifier = Modifier
                                 .rotate(rotation)
