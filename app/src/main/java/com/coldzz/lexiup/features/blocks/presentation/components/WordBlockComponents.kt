@@ -28,13 +28,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.coldzz.lexiup.R
+import com.coldzz.lexiup.features.blocks.domain.LearningLevelIndicator
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
 @Composable
 fun ActiveWordBlockComponent(
     title: String,
     description: String,
-    learningLevel: LearningLevel,
+    learningLevelIndicator: LearningLevelIndicator,
     isActive: Boolean,
     onActionButtonClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -42,7 +43,7 @@ fun ActiveWordBlockComponent(
     CoreWordBlockComponent(
         title = title,
         learningLevelEnabled = true,
-        learningLevel = learningLevel,
+        learningLevelIndicator = learningLevelIndicator,
         description = description,
         actionButton = {
             if (isActive) {
@@ -89,7 +90,7 @@ fun LearnedWordBlockComponent(
         title = title,
         description = description,
         learningLevelEnabled = false,
-        learningLevel = LearningLevel.One,
+        learningLevelIndicator = LearningLevelIndicator.One,
         actionButton = {
             Button(
                 onClick = onActionButtonClick
@@ -106,7 +107,7 @@ fun LearnedWordBlockComponent(
 @Composable
 fun CustomWordBlockComponent(
     title: String,
-    learningLevel: LearningLevel,
+    learningLevelIndicator: LearningLevelIndicator,
     onActionButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -114,7 +115,7 @@ fun CustomWordBlockComponent(
         title = title,
         description = null,
         learningLevelEnabled = true,
-        learningLevel = learningLevel,
+        learningLevelIndicator = learningLevelIndicator,
         actionButton = {
             IconButton(
                 onClick = onActionButtonClick
@@ -134,7 +135,7 @@ private fun CoreWordBlockComponent(
     title: String,
     description: String?,
     learningLevelEnabled: Boolean,
-    learningLevel: LearningLevel,
+    learningLevelIndicator: LearningLevelIndicator,
     actionButton: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -182,11 +183,15 @@ private fun CoreWordBlockComponent(
                 }
                 if (learningLevelEnabled) {
                     Icon(
-                        imageVector = when (learningLevel) {
-                            LearningLevel.One -> ImageVector.vectorResource(R.drawable.learning_level_1)
-                            LearningLevel.Two -> ImageVector.vectorResource(R.drawable.learning_level_2)
-                            LearningLevel.Three -> ImageVector.vectorResource(R.drawable.learning_level_3)
-                            LearningLevel.Four -> ImageVector.vectorResource(R.drawable.learning_level_4)
+                        imageVector = when (learningLevelIndicator) {
+                            LearningLevelIndicator.One ->
+                                ImageVector.vectorResource(LearningLevelIndicator.One.resourceId)
+                            LearningLevelIndicator.Two ->
+                                ImageVector.vectorResource(LearningLevelIndicator.Two.resourceId)
+                            LearningLevelIndicator.Three ->
+                                ImageVector.vectorResource(LearningLevelIndicator.Three.resourceId)
+                            LearningLevelIndicator.Four ->
+                                ImageVector.vectorResource(LearningLevelIndicator.Four.resourceId)
                         },
                         contentDescription = stringResource(R.string.learning_level_icon)
                     )
@@ -195,10 +200,6 @@ private fun CoreWordBlockComponent(
             actionButton()
         }
     }
-}
-
-enum class LearningLevel {
-    One, Two, Three, Four
 }
 
 @Preview
@@ -211,7 +212,7 @@ private fun ActiveWordBlockComponentPreview() {
             ActiveWordBlockComponent(
                 title = "Word block 1",
                 description = "Available now",
-                learningLevel = LearningLevel.Three,
+                learningLevelIndicator = LearningLevelIndicator.Three,
                 onActionButtonClick = {},
                 isActive = true,
                 modifier = Modifier
@@ -219,7 +220,7 @@ private fun ActiveWordBlockComponentPreview() {
             ActiveWordBlockComponent(
                 title = "Word block 1",
                 description = "Available now",
-                learningLevel = LearningLevel.Three,
+                learningLevelIndicator = LearningLevelIndicator.Three,
                 onActionButtonClick = {},
                 isActive = false,
                 modifier = Modifier
@@ -246,7 +247,7 @@ private fun LearnedWordBlockComponentPreview() {
 private fun CustomWordBlockComponentPreview() {
     CustomWordBlockComponent(
         title = "Traveling",
-        learningLevel = LearningLevel.Three,
+        learningLevelIndicator = LearningLevelIndicator.Three,
         onActionButtonClick = {},
         modifier = Modifier
     )
