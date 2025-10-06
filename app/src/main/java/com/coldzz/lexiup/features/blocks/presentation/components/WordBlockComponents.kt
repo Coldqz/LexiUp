@@ -77,6 +77,7 @@ fun ActiveWordBlockComponent(
     )
 }
 
+// block with description and another button to open and without learning level
 @Composable
 fun LearnedWordBlockComponent(
     title: String,
@@ -101,6 +102,7 @@ fun LearnedWordBlockComponent(
     )
 }
 
+// block without description and with another button to open
 @Composable
 fun CustomWordBlockComponent(
     title: String,
@@ -126,6 +128,7 @@ fun CustomWordBlockComponent(
     )
 }
 
+// main block component that could be changed to look like learned or custom block component
 @Composable
 private fun CoreWordBlockComponent(
     title: String,

@@ -5,4 +5,5 @@
     <string name="back_icon">Back icon</string>
     <string name="start">Start</string>
     <string name="learning_level_icon">Learning level icon</string>
+    <string name="learning">Learning</string>
 </resources>
