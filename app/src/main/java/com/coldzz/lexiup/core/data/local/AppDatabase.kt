@@ -3,6 +3,7 @@ package com.coldzz.lexiup.core.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.coldzz.lexiup.features.blocks.data.local.WordBlock
+import com.coldzz.lexiup.features.blocks.data.local.WordBlockDao
 import com.coldzz.lexiup.features.blocks.data.local.WordBlockOxfordWords
 import com.coldzz.lexiup.features.profile.data.local.UserStats
 import com.coldzz.lexiup.features.words.domain.model.GptAnswers
@@ -26,4 +27,6 @@ import com.coldzz.lexiup.features.words.domain.model.WordExamples
 )
 abstract class AppDatabase: RoomDatabase() {
     abstract fun wordDao(): WordDao
+
+    abstract fun wordBlockDao(): WordBlockDao
 }

@@ -10,6 +10,8 @@ import com.coldzz.lexiup.core.common.Constants
 import com.coldzz.lexiup.core.data.local.AppDatabase
 import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.coldzz.lexiup.core.workers.PopulateDataWorker
+import com.coldzz.lexiup.features.blocks.data.local.repository.WordBlockRepositoryImpl
+import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
 import com.coldzz.lexiup.features.words.data.local.repository.WordRepositoryImpl
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -47,6 +49,12 @@ object AppModule {
     @Singleton
     fun provideWordRepository(database: AppDatabase): WordRepository {
         return WordRepositoryImpl(database.wordDao())
+    }
+
+    @Provides
+    @Singleton
+    fun provideWordBlockRepository(database: AppDatabase): WordBlockRepository {
+        return WordBlockRepositoryImpl(database.wordBlockDao())
     }
 
     @Provides

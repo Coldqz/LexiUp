@@ -25,7 +25,8 @@ import com.coldzz.lexiup.features.words.domain.model.OxfordWords
     ]
 )
 data class WordBlockOxfordWords(
+    // TODO: check if we need id in cross table
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "word_id") val wordId: Int,
-    @ColumnInfo(name = "word_block_id")val wordBlockId:Int
+    @ColumnInfo(name = "word_block_id")val wordBlockId:Int,
+    @ColumnInfo(name = "word_id") val wordId: Int
 )
