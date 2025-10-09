@@ -1,10 +1,10 @@
 package com.coldzz.lexiup.core.common
 
-import com.coldzz.lexiup.features.blocks.data.local.WordBlock
-import com.coldzz.lexiup.features.blocks.data.local.WordBlockWithOxfordWords
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
 import com.coldzz.lexiup.features.blocks.domain.BlockTypes
-import com.coldzz.lexiup.features.words.domain.model.LevelCerf
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 
 class FakeDataSamples {
     companion object {
@@ -24,19 +24,23 @@ class FakeDataSamples {
         val fakeBlocksList = listOf<WordBlock>(
             WordBlock(
                 title = "ActiveBlock1",
-                blockType = BlockTypes.REGULAR
+                label = "Available now",
+                blockType = BlockTypes.REGULAR,
             ),
             WordBlock(
                 title = "ActiveBlock2",
+                label = "Available now",
                 blockType = BlockTypes.REGULAR
             ),
             WordBlock(
                 title = "LearnedActiveBlock1",
+                label = "Completed on 01.01.25",
                 blockType = BlockTypes.REGULAR,
                 isLearned = true
             ),
             WordBlock(
                 title = "LearnedActiveBlock2",
+                label = "Completed on 01.01.25",
                 blockType = BlockTypes.REGULAR,
                 isLearned = true
             ),
@@ -52,11 +56,13 @@ class FakeDataSamples {
             ),
             WordBlock(
                 title = "LearnedCustomBlock1",
+                label = "Completed on 01.01.25",
                 blockType = BlockTypes.CUSTOM,
                 isLearned = true
             ),
             WordBlock(
                 title = "LearnedCustomBlock2",
+                label = "Completed on 01.01.25",
                 blockType = BlockTypes.CUSTOM,
                 isLearned = true
             )

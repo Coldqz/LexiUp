@@ -1,6 +1,6 @@
 package com.coldzz.lexiup.features.blocks.domain
 
-import com.coldzz.lexiup.features.blocks.data.local.WordBlock
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 
 class FormattedWordBlocksList (
     val activeBlocks: MutableList<WordBlock> = mutableListOf(),

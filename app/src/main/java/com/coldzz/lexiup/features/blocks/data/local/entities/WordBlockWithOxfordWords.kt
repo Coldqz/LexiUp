@@ -1,9 +1,9 @@
-package com.coldzz.lexiup.features.blocks.data.local
+package com.coldzz.lexiup.features.blocks.data.local.entities
 
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 
 data class WordBlockWithOxfordWords(
     @Embedded val wordBlock: WordBlock,

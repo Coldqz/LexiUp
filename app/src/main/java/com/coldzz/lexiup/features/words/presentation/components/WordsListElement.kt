@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.domain.model.LevelCerf
+import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
 
 
 @Composable

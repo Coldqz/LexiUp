@@ -1,4 +1,4 @@
-package com.coldzz.lexiup.features.words.domain.model
+package com.coldzz.lexiup.features.words.data.local.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "gpt_answers",
+    tableName = "word_details",
     foreignKeys = [
         ForeignKey(
             entity = OxfordWords::class,
@@ -16,8 +16,9 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class GptAnswers(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "word_id") val wordId: String,
-    @ColumnInfo(name = "definitions_order") val definitionsOrder: String
+data class WordDetails(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(name = "word_id") val wordId: Int,
+    @ColumnInfo(name = "audio_us") val audioUs: String,
+    @ColumnInfo(name = "audio_uk") val audioUk: String,
 )

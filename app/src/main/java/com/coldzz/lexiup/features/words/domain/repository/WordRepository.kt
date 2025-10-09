@@ -1,6 +1,6 @@
 package com.coldzz.lexiup.features.words.domain.repository
 
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import kotlinx.coroutines.flow.Flow
 
 interface WordRepository {

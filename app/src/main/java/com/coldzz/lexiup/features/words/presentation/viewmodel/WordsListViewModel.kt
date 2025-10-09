@@ -3,8 +3,8 @@ package com.coldzz.lexiup.features.words.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coldzz.lexiup.features.words.domain.model.LevelCerf
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ class WordsListViewModel @Inject constructor(private val repository: WordReposit
             }
         }
     }
-
+    // TODO: for debug only, delete it after
     fun testWork() {
         Log.d(TAG, repository.toString())
         viewModelScope.launch {

@@ -2,7 +2,7 @@ package com.coldzz.lexiup.features.words.data.local.repository
 
 import com.coldzz.lexiup.features.words.data.local.WordDao
 import com.coldzz.lexiup.features.words.domain.repository.WordRepository
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

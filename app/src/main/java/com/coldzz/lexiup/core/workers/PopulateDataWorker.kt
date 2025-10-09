@@ -7,8 +7,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.coldzz.lexiup.core.common.Constants
 import com.coldzz.lexiup.features.words.data.local.prepopulate.WordsPrepopulatedModel
-import com.coldzz.lexiup.features.words.domain.model.LevelCerf
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types

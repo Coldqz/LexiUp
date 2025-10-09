@@ -1,9 +1,9 @@
 package com.coldzz.lexiup.features.blocks.data.local.repository
 
-import com.coldzz.lexiup.features.blocks.data.local.WordBlock
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.WordBlockDao
-import com.coldzz.lexiup.features.blocks.data.local.WordBlockOxfordWords
-import com.coldzz.lexiup.features.blocks.data.local.WordBlockWithOxfordWords
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockOxfordWords
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
 import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -1,7 +1,7 @@
 package com.coldzz.lexiup.features.blocks.domain
 
-import com.coldzz.lexiup.features.blocks.data.local.WordBlock
-import com.coldzz.lexiup.features.blocks.data.local.WordBlockWithOxfordWords
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
 import kotlinx.coroutines.flow.Flow
 
 interface WordBlockRepository {

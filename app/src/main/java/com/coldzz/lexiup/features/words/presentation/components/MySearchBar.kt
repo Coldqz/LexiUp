@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

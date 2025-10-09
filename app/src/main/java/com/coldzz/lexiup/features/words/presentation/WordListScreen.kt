@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import com.coldzz.lexiup.features.words.presentation.components.MySearchBar
 import com.coldzz.lexiup.features.words.presentation.components.WordsListElement
 import com.coldzz.lexiup.features.words.presentation.viewmodel.WordsListViewModel

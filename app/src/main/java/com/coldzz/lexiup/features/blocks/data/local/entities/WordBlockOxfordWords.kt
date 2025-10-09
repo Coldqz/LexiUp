@@ -1,10 +1,10 @@
-package com.coldzz.lexiup.features.blocks.data.local
+package com.coldzz.lexiup.features.blocks.data.local.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.coldzz.lexiup.features.words.domain.model.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 
 @Entity(
     tableName = "word_block_oxford_words",

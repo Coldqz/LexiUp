@@ -4,6 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockOxfordWords
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
 import kotlinx.coroutines.flow.Flow
 
 @Dao
