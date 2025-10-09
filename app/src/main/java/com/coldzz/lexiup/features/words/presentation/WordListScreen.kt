@@ -16,13 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.coldzz.lexiup.features.words.domain.model.LevelCerf
+import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.words.domain.model.OxfordWords
 import com.coldzz.lexiup.features.words.presentation.components.MySearchBar
 import com.coldzz.lexiup.features.words.presentation.components.WordsListElement
 import com.coldzz.lexiup.features.words.presentation.viewmodel.WordsListViewModel
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
-import kotlin.random.Random
 
 @Composable
 fun WordListScreen(wordsListViewModel: WordsListViewModel = hiltViewModel()) {
@@ -82,75 +81,7 @@ private fun WordListScreenContent(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun WordListScreenPreview() {
-    val fakeWordsList = mutableListOf(
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "discover",
-            partOfSpeech = "noun",
-            level = LevelCerf.A2
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "swim",
-            partOfSpeech = "verb",
-            level = LevelCerf.A1
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "run",
-            partOfSpeech = "verb",
-            level = LevelCerf.A2
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "funny",
-            partOfSpeech = "adjective",
-            level = LevelCerf.C1
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "dummy",
-            partOfSpeech = "adjective",
-            level = LevelCerf.C1
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "window",
-            partOfSpeech = "adjective",
-            level = LevelCerf.C1
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "fun",
-            partOfSpeech = "adjective",
-            level = LevelCerf.C1
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "dog",
-            partOfSpeech = "adjective",
-            level = LevelCerf.C1
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "rabbit",
-            partOfSpeech = "adjective",
-            level = LevelCerf.C1
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "running",
-            partOfSpeech = "adjective",
-            level = LevelCerf.C1
-        ),
-        OxfordWords(
-            id = Random.nextInt(),
-            word = "sand",
-            partOfSpeech = "adjective",
-            level = LevelCerf.C1
-        ),
-    )
     LexiUpTheme {
-        WordListScreenContent(fakeWordsList)
+        WordListScreenContent(FakeDataSamples.fakeWordsList1)
     }
 }

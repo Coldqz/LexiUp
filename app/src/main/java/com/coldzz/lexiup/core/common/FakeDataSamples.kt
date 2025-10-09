@@ -2,7 +2,7 @@ package com.coldzz.lexiup.core.common
 
 import com.coldzz.lexiup.features.blocks.data.local.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.WordBlockWithOxfordWords
-import com.coldzz.lexiup.features.blocks.domain.BlockType
+import com.coldzz.lexiup.features.blocks.domain.BlockTypes
 import com.coldzz.lexiup.features.words.domain.model.LevelCerf
 import com.coldzz.lexiup.features.words.domain.model.OxfordWords
 
@@ -23,30 +23,42 @@ class FakeDataSamples {
 
         val fakeBlocksList = listOf<WordBlock>(
             WordBlock(
-                title = "SampleActiveBlock1",
-                blockType = BlockType.REGULAR
+                title = "ActiveBlock1",
+                blockType = BlockTypes.REGULAR
             ),
             WordBlock(
-                title = "SampleActiveBlock2",
-                blockType = BlockType.REGULAR
+                title = "ActiveBlock2",
+                blockType = BlockTypes.REGULAR
             ),
             WordBlock(
-                title = "SampleLearnedBlock1",
-                blockType = BlockType.REGULAR,
+                title = "LearnedActiveBlock1",
+                blockType = BlockTypes.REGULAR,
                 isLearned = true
             ),
             WordBlock(
-                title = "SampleActiveBlock2",
-                blockType = BlockType.REGULAR,
+                title = "LearnedActiveBlock2",
+                blockType = BlockTypes.REGULAR,
                 isLearned = true
             ),
             WordBlock(
                 title = "CustomBlock1",
-                blockType = BlockType.CUSTOM
+                blockType = BlockTypes.CUSTOM,
+                isLearned = false
             ),
             WordBlock(
                 title = "CustomBlock2",
-                blockType = BlockType.CUSTOM
+                blockType = BlockTypes.CUSTOM,
+                isLearned = false
+            ),
+            WordBlock(
+                title = "LearnedCustomBlock1",
+                blockType = BlockTypes.CUSTOM,
+                isLearned = true
+            ),
+            WordBlock(
+                title = "LearnedCustomBlock2",
+                blockType = BlockTypes.CUSTOM,
+                isLearned = true
             )
         )
 

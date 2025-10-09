@@ -23,6 +23,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.coldzz.lexiup.R
+import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.words.domain.model.LevelCerf
 
 
@@ -69,9 +70,5 @@ fun WordsListElement(
 @Preview()
 @Composable
 private fun WordsListElementPreview() {
-    WordsListElement(
-        "discover",
-        LevelCerf.A2,
-        "noun"
-    )
+    FakeDataSamples.fakeWordsList1[0]
 }

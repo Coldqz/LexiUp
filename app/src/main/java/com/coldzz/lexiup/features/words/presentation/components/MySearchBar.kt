@@ -23,7 +23,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.coldzz.lexiup.R
-import com.coldzz.lexiup.features.words.domain.model.LevelCerf
+import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.words.domain.model.OxfordWords
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,22 +112,10 @@ fun MySearchBar(
 @Preview
 @Composable
 private fun MySearchBarPreview() {
-    val fakeWordsList = mutableListOf(
-        OxfordWords(word = "discover", partOfSpeech = "noun", level = LevelCerf.A2),
-        OxfordWords(word = "swim", partOfSpeech = "verb", level = LevelCerf.A1),
-        OxfordWords(word = "run", partOfSpeech = "verb", level = LevelCerf.A2),
-        OxfordWords(word = "raw", partOfSpeech = "adjective", level = LevelCerf.C1),
-        OxfordWords(word = "bunny", partOfSpeech = "adjective", level = LevelCerf.C1),
-        OxfordWords(word = "pencil", partOfSpeech = "adjective", level = LevelCerf.C1),
-        OxfordWords(word = "wooden", partOfSpeech = "adjective", level = LevelCerf.C1),
-        OxfordWords(word = "wood", partOfSpeech = "adjective", level = LevelCerf.C1),
-        OxfordWords(word = "hall", partOfSpeech = "adjective", level = LevelCerf.C1),
-        OxfordWords(word = "town", partOfSpeech = "adjective", level = LevelCerf.C1),
-    )
     MySearchBar(
         { },
         modifier = Modifier,
-        dataForSearch = fakeWordsList
+        dataForSearch = FakeDataSamples.fakeWordsList1
     )
 
 }
