@@ -1,5 +1,6 @@
 package com.coldzz.lexiup.features.blocks.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,32 +34,82 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.coldzz.lexiup.R
+import com.coldzz.lexiup.core.common.Constants.DATE_FORMATTER
+import com.coldzz.lexiup.core.common.Constants.TIME_FORMAT
+import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.blocks.domain.LearningLevelIndicator
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
+import kotlinx.coroutines.delay
+import java.time.Duration
+import java.time.LocalDateTime
+import java.util.Locale
+
+private const val TAG = "WordBlockComponents"
 
 @Composable
 fun ActiveWordBlockComponent(
     title: String,
-    description: String,
     learningLevelIndicator: LearningLevelIndicator,
-    isActive: Boolean,
+    availableAt: LocalDateTime,
     onActionButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var remainingText by remember { mutableStateOf("") }
+    var isActionButtonActive by remember { mutableStateOf(false) }
+    var isCountdownRunning by remember { mutableStateOf(true) }
+
+    // TODO: fix logic here, it does not work
+    // updating timer for active blocks every one minute
+    LaunchedEffect(availableAt) {
+        val remaining = Duration.between(LocalDateTime.now(), availableAt)
+        val hours = remaining.toHours()
+        val minutes = remaining.toMinutes() % 60
+        if (remaining.isNegative || remaining.isZero || (hours == 0L && minutes == 0L)) {
+            remainingText = "Available now"
+            isActionButtonActive = true
+        } else {
+            while (isCountdownRunning) {
+                /*
+                * computing and formatting duration between
+                * moment when block will be available for learning and current moment
+                * */
+                val remaining = Duration.between(LocalDateTime.now(), availableAt)
+                val hours = remaining.toHours()
+                val minutes = remaining.toMinutes() % 60
+
+                /*remainingText = if (remaining.isNegative || remaining.isZero || (hours == 0L && minutes == 0L)) {
+                    "Available now"
+                } else {
+                    "Available in: ${String.format(Locale.US, TIME_FORMAT, hours, minutes)}"
+                }*/
+
+                if (remaining.isNegative || remaining.isZero || (hours == 0L && minutes == 0L)) {
+                    remainingText = "Available now"
+                    isCountdownRunning = false
+                } else {
+                    remainingText = "Available in: ${String.format(Locale.US, TIME_FORMAT, hours, minutes)}"
+                    Log.d(TAG, "delay started")
+                    delay(5_000L)
+//            delay(60_000L)
+                }
+            }
+        }
+    }
+
     CoreWordBlockComponent(
         title = title,
         learningLevelEnabled = true,
         learningLevelIndicator = learningLevelIndicator,
-        description = description,
+        label = remainingText,
         actionButton = {
-            if (isActive) {
+            if (isActionButtonActive) {
                 Button(
                     onClick = onActionButtonClick
                 ) {
                     Text(
                         text = stringResource(R.string.start),
 
-                    )
+                        )
                 }
             } else {
                 Button(
@@ -82,13 +138,16 @@ fun ActiveWordBlockComponent(
 @Composable
 fun LearnedWordBlockComponent(
     title: String,
-    description: String,
+    completedAt: LocalDateTime,
     onActionButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val completionDate = remember {
+        completedAt.format(DATE_FORMATTER)
+    }
     CoreWordBlockComponent(
         title = title,
-        description = description,
+        label = "Completed at: $completionDate",
         learningLevelEnabled = false,
         learningLevelIndicator = LearningLevelIndicator.One,
         actionButton = {
@@ -113,7 +172,7 @@ fun CustomWordBlockComponent(
 ) {
     CoreWordBlockComponent(
         title = title,
-        description = null,
+        label = null,
         learningLevelEnabled = true,
         learningLevelIndicator = learningLevelIndicator,
         actionButton = {
@@ -133,7 +192,7 @@ fun CustomWordBlockComponent(
 @Composable
 private fun CoreWordBlockComponent(
     title: String,
-    description: String?,
+    label: String?,
     learningLevelEnabled: Boolean,
     learningLevelIndicator: LearningLevelIndicator,
     actionButton: @Composable () -> Unit,
@@ -173,9 +232,9 @@ private fun CoreWordBlockComponent(
                         text = title,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    description?.let {
+                    label?.let {
                         Text(
-                            text = description,
+                            text = label,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -186,10 +245,13 @@ private fun CoreWordBlockComponent(
                         imageVector = when (learningLevelIndicator) {
                             LearningLevelIndicator.One ->
                                 ImageVector.vectorResource(LearningLevelIndicator.One.resourceId)
+
                             LearningLevelIndicator.Two ->
                                 ImageVector.vectorResource(LearningLevelIndicator.Two.resourceId)
+
                             LearningLevelIndicator.Three ->
                                 ImageVector.vectorResource(LearningLevelIndicator.Three.resourceId)
+
                             LearningLevelIndicator.Four ->
                                 ImageVector.vectorResource(LearningLevelIndicator.Four.resourceId)
                         },
@@ -211,19 +273,15 @@ private fun ActiveWordBlockComponentPreview() {
         ) {
             ActiveWordBlockComponent(
                 title = "Word block 1",
-                description = "Available now",
                 learningLevelIndicator = LearningLevelIndicator.Three,
-                onActionButtonClick = {},
-                isActive = true,
-                modifier = Modifier
+                availableAt = FakeDataSamples.fakeBlocksList[0].availableAt!!,
+                onActionButtonClick = {}
             )
             ActiveWordBlockComponent(
                 title = "Word block 1",
-                description = "Available now",
                 learningLevelIndicator = LearningLevelIndicator.Three,
-                onActionButtonClick = {},
-                isActive = false,
-                modifier = Modifier
+                availableAt = FakeDataSamples.fakeBlocksList[1].availableAt!!,
+                onActionButtonClick = {}
             )
         }
     }
@@ -234,8 +292,8 @@ private fun ActiveWordBlockComponentPreview() {
 private fun LearnedWordBlockComponentPreview() {
     LexiUpTheme {
         LearnedWordBlockComponent(
-            title = "Word block 1",
-            description = "Completed on 01.01.2025",
+            title = FakeDataSamples.fakeBlocksList[4].title,
+            completedAt = FakeDataSamples.fakeBlocksList[5].completedAt!!,
             onActionButtonClick = {},
             modifier = Modifier
         )
