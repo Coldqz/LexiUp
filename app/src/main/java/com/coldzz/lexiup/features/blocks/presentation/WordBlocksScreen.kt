@@ -71,6 +71,7 @@ private fun WordBlocksScreenContent(
         LazyColumn(
             Modifier.padding(innerPadding)
         ) {
+            // TODO: refactor this for perfomance
             item {
                 BlockCategoryDivider(
                     title = "Active blocks",
@@ -81,9 +82,9 @@ private fun WordBlocksScreenContent(
             itemsIndexed(blocksList.activeBlocks) { index, block ->
                 ActiveWordBlockComponent(
                     title = block.title,
-                    description = "description",
                     learningLevelIndicator = LearningLevelIndicator.One,
-                    isActive = true,
+                    // TODO: check if is it dangerous to use !! here
+                    availableAt = block.availableAt!!,
                     onActionButtonClick = { },
                 )
             }
@@ -101,19 +102,22 @@ private fun WordBlocksScreenContent(
                     onActionButtonClick = { },
                 )
             }
-            item {
-                BlockCategoryDivider(
-                    title = "Learned blocks",
-                    enableAddButton = false,
-                    counter = null
-                )
-            }
-            itemsIndexed(blocksList.learnedBlocks) { index, block ->
-                LearnedWordBlockComponent(
-                    title = block.title,
-                    description = "description",
-                    onActionButtonClick = { },
-                )
+            if(blocksList.learnedBlocks.isNotEmpty()) {
+                item {
+                    BlockCategoryDivider(
+                        title = "Learned blocks",
+                        enableAddButton = false,
+                        counter = null
+                    )
+                }
+                itemsIndexed(blocksList.learnedBlocks) { index, block ->
+                    LearnedWordBlockComponent(
+                        title = block.title,
+                        // TODO: check if is it dangerous to use !! here
+                        completedAt = block.completedAt!!,
+                        onActionButtonClick = { },
+                    )
+                }
             }
         }
     }

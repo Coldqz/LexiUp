@@ -5,6 +5,7 @@ import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxford
 import com.coldzz.lexiup.features.blocks.domain.BlockTypes
 import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
+import java.time.LocalDateTime
 
 class FakeDataSamples {
     companion object {
@@ -24,47 +25,53 @@ class FakeDataSamples {
         val fakeBlocksList = listOf<WordBlock>(
             WordBlock(
                 title = "ActiveBlock1",
-                label = "Available now",
                 blockType = BlockTypes.REGULAR,
+                availableAt = LocalDateTime.now().plusHours(4),
+                completedAt = null
             ),
             WordBlock(
                 title = "ActiveBlock2",
-                label = "Available now",
-                blockType = BlockTypes.REGULAR
-            ),
-            WordBlock(
-                title = "LearnedActiveBlock1",
-                label = "Completed on 01.01.25",
                 blockType = BlockTypes.REGULAR,
-                isLearned = true
-            ),
-            WordBlock(
-                title = "LearnedActiveBlock2",
-                label = "Completed on 01.01.25",
-                blockType = BlockTypes.REGULAR,
-                isLearned = true
+                availableAt = LocalDateTime.now().plusHours(10),
+                completedAt = null
             ),
             WordBlock(
                 title = "CustomBlock1",
                 blockType = BlockTypes.CUSTOM,
-                isLearned = false
+                availableAt = LocalDateTime.now().plusHours(4),
+                completedAt = null
             ),
             WordBlock(
                 title = "CustomBlock2",
                 blockType = BlockTypes.CUSTOM,
-                isLearned = false
+                availableAt = LocalDateTime.now().plusHours(2),
+                completedAt = null
+            ),
+            WordBlock(
+                title = "LearnedActiveBlock1",
+                blockType = BlockTypes.REGULAR,
+                isLearned = true,
+                completedAt = LocalDateTime.now().minusDays(4)
+            ),
+            WordBlock(
+                title = "LearnedActiveBlock2",
+                blockType = BlockTypes.REGULAR,
+                isLearned = true,
+                completedAt = LocalDateTime.now().minusDays(3)
             ),
             WordBlock(
                 title = "LearnedCustomBlock1",
-                label = "Completed on 01.01.25",
                 blockType = BlockTypes.CUSTOM,
-                isLearned = true
+                isLearned = true,
+                availableAt = null,
+                completedAt = LocalDateTime.now().minusDays(1)
             ),
             WordBlock(
                 title = "LearnedCustomBlock2",
-                label = "Completed on 01.01.25",
                 blockType = BlockTypes.CUSTOM,
-                isLearned = true
+                isLearned = true,
+                availableAt = null,
+                completedAt = LocalDateTime.now().minusDays(2)
             )
         )
 
