@@ -1,6 +1,5 @@
 package com.coldzz.lexiup.features.blocks.presentation.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,9 +18,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,9 +37,9 @@ import com.coldzz.lexiup.core.common.Constants.DATE_FORMATTER
 import com.coldzz.lexiup.core.common.Constants.TIME_FORMAT
 import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.blocks.domain.LearningLevelIndicator
+import com.coldzz.lexiup.features.blocks.util.BlockTimeUtils
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 import kotlinx.coroutines.delay
-import java.time.Duration
 import java.time.LocalDateTime
 import java.util.Locale
 
@@ -54,45 +53,31 @@ fun ActiveWordBlockComponent(
     onActionButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var remainingText by remember { mutableStateOf("") }
     var isActionButtonActive by remember { mutableStateOf(false) }
-    var isCountdownRunning by remember { mutableStateOf(true) }
 
-    // TODO: fix logic here, it does not work
-    // updating timer for active blocks every one minute
-    LaunchedEffect(availableAt) {
-        val remaining = Duration.between(LocalDateTime.now(), availableAt)
-        val hours = remaining.toHours()
-        val minutes = remaining.toMinutes() % 60
-        if (remaining.isNegative || remaining.isZero || (hours == 0L && minutes == 0L)) {
-            remainingText = "Available now"
-            isActionButtonActive = true
-        } else {
-            while (isCountdownRunning) {
-                /*
-                * computing and formatting duration between
-                * moment when block will be available for learning and current moment
-                * */
-                val remaining = Duration.between(LocalDateTime.now(), availableAt)
-                val hours = remaining.toHours()
-                val minutes = remaining.toMinutes() % 60
-
-                /*remainingText = if (remaining.isNegative || remaining.isZero || (hours == 0L && minutes == 0L)) {
-                    "Available now"
-                } else {
-                    "Available in: ${String.format(Locale.US, TIME_FORMAT, hours, minutes)}"
-                }*/
-
-                if (remaining.isNegative || remaining.isZero || (hours == 0L && minutes == 0L)) {
-                    remainingText = "Available now"
-                    isCountdownRunning = false
-                } else {
-                    remainingText = "Available in: ${String.format(Locale.US, TIME_FORMAT, hours, minutes)}"
-                    Log.d(TAG, "delay started")
-                    delay(5_000L)
-//            delay(60_000L)
-                }
+    /*
+    * text of the block availability label,
+    * runs countdown when block is not available yet and set to available when it is
+    * */
+    val countDownText by produceState(initialValue = "Calculating...") {
+        while (true) {
+            val remainingTime = BlockTimeUtils.calculateRemainingTime(availableAt)
+            value = if (BlockTimeUtils.isTimeUp(remainingTime)) {
+                isActionButtonActive = true
+                "Available now"
             }
+            else {
+                isActionButtonActive = false
+                "Available in: ${
+                    String.format(
+                        Locale.US, TIME_FORMAT,
+                        remainingTime.hours,
+                        remainingTime.minutes
+                    )
+                }"
+            }
+            if (BlockTimeUtils.isTimeUp(remainingTime)) break
+            delay(60_000L)
         }
     }
 
@@ -100,7 +85,7 @@ fun ActiveWordBlockComponent(
         title = title,
         learningLevelEnabled = true,
         learningLevelIndicator = learningLevelIndicator,
-        label = remainingText,
+        label = countDownText,
         actionButton = {
             if (isActionButtonActive) {
                 Button(

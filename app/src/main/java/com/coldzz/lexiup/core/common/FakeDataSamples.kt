@@ -26,13 +26,13 @@ class FakeDataSamples {
             WordBlock(
                 title = "ActiveBlock1",
                 blockType = BlockTypes.REGULAR,
-                availableAt = LocalDateTime.now().plusHours(4),
+                availableAt = LocalDateTime.now().plusMinutes(1),
                 completedAt = null
             ),
             WordBlock(
                 title = "ActiveBlock2",
                 blockType = BlockTypes.REGULAR,
-                availableAt = LocalDateTime.now().plusHours(10),
+                availableAt = LocalDateTime.now().plusMinutes(2),
                 completedAt = null
             ),
             WordBlock(
