@@ -1,4 +1,4 @@
- package com.coldzz.lexiup
+package com.coldzz.lexiup
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,6 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.coldzz.lexiup.features.blocks.presentation.WordBlockScreen
+import com.coldzz.lexiup.features.navigation.BottomNavBar
+import com.coldzz.lexiup.features.navigation.NavRoutes
+import com.coldzz.lexiup.features.profile.presentation.ProfileScreen
+import com.coldzz.lexiup.features.words.presentation.WordListScreen
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,11 +29,33 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LexiUpTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                val startDestination = NavRoutes.HomeScreen
+                val navController = rememberNavController()
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        BottomNavBar(
+                            navController = navController,
+                            startDestination = startDestination
+                        )
+                    }
+
+                ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = startDestination,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        composable<NavRoutes.HomeScreen> {
+                            ProfileScreen()
+                        }
+                        composable<NavRoutes.LearningScreen> {
+                            WordBlockScreen()
+                        }
+                        composable<NavRoutes.WordsScreen> {
+                            WordListScreen()
+                        }
+                    }
                 }
             }
         }

@@ -28,7 +28,7 @@ import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
 
 
 @Composable
-fun WordsListElement(
+fun WordListElement(
     title: String,
     level: LevelCerf,
     partOfSpeech: String,
@@ -69,6 +69,6 @@ fun WordsListElement(
 
 @Preview()
 @Composable
-private fun WordsListElementPreview() {
+private fun WordListElementPreview() {
     FakeDataSamples.fakeWordsList1[0]
 }

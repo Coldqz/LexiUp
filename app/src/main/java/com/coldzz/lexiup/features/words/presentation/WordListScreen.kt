@@ -19,7 +19,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import com.coldzz.lexiup.features.words.presentation.components.MySearchBar
-import com.coldzz.lexiup.features.words.presentation.components.WordsListElement
+import com.coldzz.lexiup.features.words.presentation.components.WordListElement
 import com.coldzz.lexiup.features.words.presentation.viewmodel.WordsListViewModel
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
@@ -48,7 +48,6 @@ private fun WordListScreenContent(
                 contentAlignment = Alignment.TopCenter
             ) {
                 MySearchBar(
-                    onSearch = {},
                     dataForSearch = wordsList
                 )
 
@@ -65,7 +64,7 @@ private fun WordListScreenContent(
                     word.id
                 }
             ) { word ->
-                WordsListElement(
+                WordListElement(
                     title = word.word,
                     level = word.level,
                     partOfSpeech = word.partOfSpeech

@@ -29,7 +29,6 @@ import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MySearchBar(
-    onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
     dataForSearch: List<OxfordWords>
 ) {
@@ -97,7 +96,7 @@ fun MySearchBar(
         if (filteredList.isNotEmpty()) {
             LazyColumn {
                 items(filteredList) { element ->
-                    WordsListElement(
+                    WordListElement(
                         title = element.word,
                         level = element.level,
                         partOfSpeech = element.partOfSpeech,
@@ -113,7 +112,6 @@ fun MySearchBar(
 @Composable
 private fun MySearchBarPreview() {
     MySearchBar(
-        { },
         modifier = Modifier,
         dataForSearch = FakeDataSamples.fakeWordsList1
     )

@@ -16,9 +16,6 @@ private const val TAG = "WordBlockViewModel"
 
 @HiltViewModel
 class WordBlockViewModel @Inject constructor(private val repository: WordBlockRepository): ViewModel() {
-    // TODO: delete this. I used it to fetch blocks and words all in once
-    /*private val _blocksList: MutableStateFlow<List<WordBlockWithOxfordWords>> = MutableStateFlow(emptyList<WordBlockWithOxfordWords>())
-    val blocksList: StateFlow<List<WordBlockWithOxfordWords>> = _blocksList.asStateFlow()*/
 
     private val _blocksList: MutableStateFlow<FormattedWordBlocksList> = MutableStateFlow(FormattedWordBlocksList())
     val blocksList: StateFlow<FormattedWordBlocksList> = _blocksList.asStateFlow()
@@ -28,13 +25,6 @@ class WordBlockViewModel @Inject constructor(private val repository: WordBlockRe
             repository.getAllBlocks().collect { blockList ->
                 _blocksList.value = FormattedWordBlocksList.formattedList(blockList)
             }
-
-            // TODO: delete this. I used it to fetch blocks and words all in once
-            /*repository.getWordBlockWithOxfordWords().collect { blocksList ->
-                _blocksList.value = blocksList
-                Log.d(TAG, "New values were collected")
-                Log.d(TAG, blocksList.joinToString(";"))
-            }*/
         }
     }
     // TODO: delete this, its only for debug
