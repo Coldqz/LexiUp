@@ -67,7 +67,9 @@ private fun WordListScreenContent(
                 WordListElement(
                     title = word.word,
                     level = word.level,
-                    partOfSpeech = word.partOfSpeech
+                    partOfSpeech = word.partOfSpeech,
+                    // TODO: hardcoded for testing
+                    isAddedToReviewBlock = true
                 )
             }
         }

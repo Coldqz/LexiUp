@@ -101,6 +101,8 @@ fun MySearchBar(
                         title = element.word,
                         level = element.level,
                         partOfSpeech = element.partOfSpeech,
+                        // TODO: hardcoded for testing
+                        isAddedToReviewBlock = false,
                     )
                 }
             }

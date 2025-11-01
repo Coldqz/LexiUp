@@ -6,4 +6,6 @@
     <string name="start">Start</string>
     <string name="learning_level_icon">Learning level icon</string>
     <string name="learning">Learning</string>
+    <string name="add_as_bookmark">Add as bookmark</string>
+    <string name="added_as_bookmark_icon">Added as bookmark icon</string>
 </resources>
