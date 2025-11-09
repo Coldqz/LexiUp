@@ -4,7 +4,7 @@ import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 
 class FormattedWordBlocksList (
     val activeBlocks: MutableList<WordBlock> = mutableListOf(),
-    val customBlocks: MutableList<WordBlock> = mutableListOf(),
+    val plannedBlocks: MutableList<WordBlock> = mutableListOf(),
     val learnedBlocks: MutableList<WordBlock> = mutableListOf()
 ) {
     companion object {
@@ -12,9 +12,9 @@ class FormattedWordBlocksList (
             val formattedWordBlock = FormattedWordBlocksList()
             data.forEach { wordBlock ->
                 when {
-                    wordBlock.blockType == BlockTypes.REGULAR && !wordBlock.isLearned -> formattedWordBlock.activeBlocks.add(wordBlock)
-                    wordBlock.blockType == BlockTypes.CUSTOM && !wordBlock.isLearned -> formattedWordBlock.customBlocks.add(wordBlock)
-                    wordBlock.isLearned -> formattedWordBlock.learnedBlocks.add(wordBlock)
+                    wordBlock.blockType == BlockTypes.ACTIVE && !wordBlock.isPermanent -> formattedWordBlock.activeBlocks.add(wordBlock)
+                    wordBlock.blockType == BlockTypes.PLANNED && !wordBlock.isPermanent -> formattedWordBlock.plannedBlocks.add(wordBlock)
+                    wordBlock.blockType == BlockTypes.LEARNED && !wordBlock.isPermanent -> formattedWordBlock.learnedBlocks.add(wordBlock)
                 }
             }
             return formattedWordBlock

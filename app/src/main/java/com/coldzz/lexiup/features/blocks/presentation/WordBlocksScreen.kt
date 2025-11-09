@@ -2,7 +2,7 @@ package com.coldzz.lexiup.features.blocks.presentation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,7 +71,7 @@ private fun WordBlocksScreenContent(
         LazyColumn(
             Modifier.padding(innerPadding)
         ) {
-            // TODO: refactor this for perfomance
+            // TODO: refactor this for performance
             item {
                 BlockCategoryDivider(
                     title = "Active blocks",
@@ -79,7 +79,7 @@ private fun WordBlocksScreenContent(
                     counter = ActiveBlocksCounter(3, 4)
                 )
             }
-            itemsIndexed(blocksList.activeBlocks) { index, block ->
+            items(blocksList.activeBlocks) { block ->
                 ActiveWordBlockComponent(
                     title = block.title,
                     learningLevelIndicator = LearningLevelIndicator.One,
@@ -90,12 +90,12 @@ private fun WordBlocksScreenContent(
             }
             item {
                 BlockCategoryDivider(
-                    title = "Custom blocks",
+                    title = "Planned blocks",
                     enableAddButton = true,
                     counter = null
                 )
             }
-            itemsIndexed(blocksList.customBlocks) { index, block ->
+            items(blocksList.plannedBlocks) { block ->
                 CustomWordBlockComponent(
                     title = block.title,
                     learningLevelIndicator = LearningLevelIndicator.One,
@@ -110,11 +110,11 @@ private fun WordBlocksScreenContent(
                         counter = null
                     )
                 }
-                itemsIndexed(blocksList.learnedBlocks) { index, block ->
+                items(blocksList.learnedBlocks) { block ->
                     LearnedWordBlockComponent(
                         title = block.title,
                         // TODO: check if is it dangerous to use !! here
-                        completedAt = block.completedAt!!,
+                        completedAt = block.completedAt,
                         onActionButtonClick = { },
                     )
                 }

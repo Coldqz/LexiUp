@@ -123,16 +123,16 @@ fun ActiveWordBlockComponent(
 @Composable
 fun LearnedWordBlockComponent(
     title: String,
-    completedAt: LocalDateTime,
+    completedAt: LocalDateTime?,
     onActionButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val completionDate = remember {
-        completedAt.format(DATE_FORMATTER)
+        completedAt?.format(DATE_FORMATTER)
     }
     CoreWordBlockComponent(
         title = title,
-        label = "Completed at: $completionDate",
+        label = if (completionDate != null ) "Completed at: $completionDate" else null,
         learningLevelEnabled = false,
         learningLevelIndicator = LearningLevelIndicator.One,
         actionButton = {

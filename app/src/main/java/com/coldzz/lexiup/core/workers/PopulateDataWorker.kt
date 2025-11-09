@@ -6,9 +6,12 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.coldzz.lexiup.core.common.Constants
-import com.coldzz.lexiup.features.words.data.local.prepopulate.WordsPrepopulatedModel
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
+import com.coldzz.lexiup.features.blocks.domain.BlockTypes
+import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
 import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.prepopulate.WordsPrepopulatedModel
 import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -23,7 +26,8 @@ class PopulateDataWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     val moshi: Moshi,
-    val repository: WordRepository
+    val wordRepository: WordRepository,
+    val wordBlockRepository: WordBlockRepository
 ) : CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         Log.i(TAG, "Work request triggered")
@@ -51,7 +55,16 @@ class PopulateDataWorker @AssistedInject constructor(
                     }
                 )
             }?.let { generatedWords ->
-                repository.insertAllWords(generatedWords)
+                // insert all of the generated words
+                wordRepository.insertAllWords(generatedWords)
+                // insert permanent review block
+                wordBlockRepository.addBlock(
+                    WordBlock(
+                        title ="Review Block",
+                        blockType = BlockTypes.ACTIVE,
+                        isPermanent = true
+                    )
+                )
             }
 
             Log.i(TAG, "Work request ended")

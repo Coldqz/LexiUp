@@ -25,53 +25,33 @@ class FakeDataSamples {
         val fakeBlocksList = listOf<WordBlock>(
             WordBlock(
                 title = "ActiveBlock1",
-                blockType = BlockTypes.REGULAR,
-                availableAt = LocalDateTime.now().plusMinutes(1),
-                completedAt = null
+                blockType = BlockTypes.ACTIVE,
+                availableAt = LocalDateTime.now().plusMinutes(1)
             ),
             WordBlock(
                 title = "ActiveBlock2",
-                blockType = BlockTypes.REGULAR,
-                availableAt = LocalDateTime.now().plusMinutes(2),
-                completedAt = null
+                blockType = BlockTypes.ACTIVE,
+                availableAt = LocalDateTime.now().plusMinutes(2)
             ),
             WordBlock(
-                title = "CustomBlock1",
-                blockType = BlockTypes.CUSTOM,
-                availableAt = LocalDateTime.now().plusHours(4),
-                completedAt = null
+                title = "PlannedBlock1",
+                blockType = BlockTypes.PLANNED,
+                availableAt = LocalDateTime.now().plusHours(4)
             ),
             WordBlock(
-                title = "CustomBlock2",
-                blockType = BlockTypes.CUSTOM,
-                availableAt = LocalDateTime.now().plusHours(2),
-                completedAt = null
+                title = "PlannedBlock2",
+                blockType = BlockTypes.PLANNED,
+                availableAt = LocalDateTime.now().plusHours(2)
             ),
             WordBlock(
-                title = "LearnedActiveBlock1",
-                blockType = BlockTypes.REGULAR,
-                isLearned = true,
+                title = "LearnedBlock1",
+                blockType = BlockTypes.LEARNED,
                 completedAt = LocalDateTime.now().minusDays(4)
             ),
             WordBlock(
-                title = "LearnedActiveBlock2",
-                blockType = BlockTypes.REGULAR,
-                isLearned = true,
+                title = "LearnedBlock2",
+                blockType = BlockTypes.LEARNED,
                 completedAt = LocalDateTime.now().minusDays(3)
-            ),
-            WordBlock(
-                title = "LearnedCustomBlock1",
-                blockType = BlockTypes.CUSTOM,
-                isLearned = true,
-                availableAt = null,
-                completedAt = LocalDateTime.now().minusDays(1)
-            ),
-            WordBlock(
-                title = "LearnedCustomBlock2",
-                blockType = BlockTypes.CUSTOM,
-                isLearned = true,
-                availableAt = null,
-                completedAt = LocalDateTime.now().minusDays(2)
             )
         )
 

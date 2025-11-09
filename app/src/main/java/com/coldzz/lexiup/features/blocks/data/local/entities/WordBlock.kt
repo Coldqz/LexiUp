@@ -13,7 +13,7 @@ data class WordBlock(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "learning_level") val learningLevel: LearningLevelIndicator = LearningLevelIndicator.One,
     @ColumnInfo(name = "block_type") val blockType: BlockTypes,
-    @ColumnInfo(name = "is_learned") val isLearned: Boolean = false,
     @ColumnInfo(name = "available_at") val availableAt: LocalDateTime? = null,
-    @ColumnInfo(name = "completed_at") val completedAt: LocalDateTime? = null
+    @ColumnInfo(name = "completed_at") val completedAt: LocalDateTime? = null,
+    @ColumnInfo(name = "isPermanent") val isPermanent: Boolean = false
 )
