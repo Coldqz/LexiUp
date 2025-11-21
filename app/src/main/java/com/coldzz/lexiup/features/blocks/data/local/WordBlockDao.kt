@@ -7,6 +7,7 @@ import androidx.room.Transaction
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockOxfordWords
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,4 +25,11 @@ interface WordBlockDao {
 
     @Insert
     suspend fun addBlock(wordBlock: WordBlock)
+
+    @Query("SELECT id FROM word_block WHERE isPermanent = 1 LIMIT 1")
+    suspend fun getReviewBlockId(): Int
+
+    suspend fun getReviewBlockWords(): Flow<List<OxfordWords>> {
+        TODO("Not implemented yet")
+    }
 }

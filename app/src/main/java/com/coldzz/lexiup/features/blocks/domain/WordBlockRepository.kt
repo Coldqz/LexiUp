@@ -2,6 +2,7 @@ package com.coldzz.lexiup.features.blocks.domain
 
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import kotlinx.coroutines.flow.Flow
 
 interface WordBlockRepository {
@@ -12,4 +13,10 @@ interface WordBlockRepository {
     fun getWordBlockWithOxfordWords(): Flow<List<WordBlockWithOxfordWords>>
 
     suspend fun addBlock(wordBlock: WordBlock)
+
+    suspend fun addWordToReviewBlock(wordId: Int)
+
+    suspend fun deleteWordFromReviewBlock(wordId: Int)
+
+    suspend fun getReviewBlockWords(): Flow<List<OxfordWords>>
 }

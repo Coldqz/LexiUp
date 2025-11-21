@@ -8,11 +8,11 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.coldzz.lexiup.core.common.Constants
 import com.coldzz.lexiup.core.data.local.AppDatabase
-import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.coldzz.lexiup.core.workers.PopulateDataWorker
 import com.coldzz.lexiup.features.blocks.data.local.repository.WordBlockRepositoryImpl
 import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
 import com.coldzz.lexiup.features.words.data.local.repository.WordRepositoryImpl
+import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -24,8 +24,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {

@@ -58,4 +58,10 @@ class WordBlockViewModel @Inject constructor(private val repository: WordBlockRe
             repository.addWordsToBlock(2, listOf(5632))
         }
     }
+
+    fun addWordToReviewBlock(wordId: Int){
+        viewModelScope.launch {
+            repository.addWordToReviewBlock(wordId)
+        }
+    }
 }
