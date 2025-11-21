@@ -71,8 +71,15 @@ class WordBlockRepositoryImpl @Inject constructor(private val dao: WordBlockDao)
     }
 
     override suspend fun deleteWordFromReviewBlock(wordId: Int) {
-//        dao.deleteWordFromReviewBlock(wordId)
-        TODO("Not implemented yet")
+        val reviewBlockId = getCachedReviewBlockId()
+        dao.deleteWordFromBlock(
+            listOf(
+                WordBlockOxfordWords(
+                    wordBlockId = reviewBlockId,
+                    wordId = wordId
+                )
+            )
+        )
     }
 
     override suspend fun getReviewBlockWords(): Flow<List<OxfordWords>> {
