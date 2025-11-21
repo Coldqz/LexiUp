@@ -2,6 +2,7 @@ package com.coldzz.lexiup.features.blocks.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
@@ -16,7 +17,7 @@ interface WordBlockDao {
     @Query("SELECT * FROM word_block")
     fun getAllBlocks(): Flow<List<WordBlock>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addWordsToBlock(wordBlockOxfordWordsList: List<WordBlockOxfordWords>)
 
     @Transaction
