@@ -16,9 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.blocks.domain.FormattedWordBlocksList
@@ -29,12 +32,17 @@ import com.coldzz.lexiup.features.blocks.presentation.components.BlockCategoryDi
 import com.coldzz.lexiup.features.blocks.presentation.components.CustomWordBlockComponent
 import com.coldzz.lexiup.features.blocks.presentation.components.LearnedWordBlockComponent
 import com.coldzz.lexiup.features.blocks.presentation.viewmodel.WordBlockViewModel
+import com.coldzz.lexiup.features.navigation.NavRoutes
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
 @Composable
-fun WordBlockScreen(wordBlockViewModel: WordBlockViewModel = hiltViewModel()) {
+fun WordBlockScreen(wordBlockViewModel: WordBlockViewModel = hiltViewModel(), navController: NavController) {
     val blocksList by wordBlockViewModel.blocksList.collectAsState()
     WordBlocksScreenContent(
+        actionOnInfoButton = {},
+        actionOnBookmarkButton = {
+            navController.navigate(NavRoutes.ReviewBlock)
+        },
         blocksList = blocksList
     )
 }
@@ -42,6 +50,8 @@ fun WordBlockScreen(wordBlockViewModel: WordBlockViewModel = hiltViewModel()) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WordBlocksScreenContent(
+    actionOnInfoButton: () -> Unit,
+    actionOnBookmarkButton:() -> Unit,
     blocksList: FormattedWordBlocksList,
     modifier: Modifier = Modifier
 ) {
@@ -56,7 +66,15 @@ private fun WordBlocksScreenContent(
                 },
                 actions = {
                     IconButton(
-                        onClick = {}
+                        onClick = actionOnBookmarkButton
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
+                            contentDescription = "Information icon"
+                        )
+                    }
+                    IconButton(
+                        onClick = actionOnInfoButton
                     ) {
                         Icon(
                             imageVector = Icons.Default.Info,
@@ -66,8 +84,7 @@ private fun WordBlocksScreenContent(
                 }
             )
         }
-    ) {
-        innerPadding ->
+    ) { innerPadding ->
         LazyColumn(
             Modifier.padding(innerPadding)
         ) {
@@ -102,7 +119,7 @@ private fun WordBlocksScreenContent(
                     onActionButtonClick = { },
                 )
             }
-            if(blocksList.learnedBlocks.isNotEmpty()) {
+            if (blocksList.learnedBlocks.isNotEmpty()) {
                 item {
                     BlockCategoryDivider(
                         title = "Learned blocks",
@@ -127,6 +144,10 @@ private fun WordBlocksScreenContent(
 @Composable
 private fun WordBlocksScreenContentPreview() {
     LexiUpTheme {
-        WordBlocksScreenContent(blocksList = FormattedWordBlocksList.formattedList(FakeDataSamples.fakeBlocksList))
+        WordBlocksScreenContent(
+            {},
+            {},
+            blocksList = FormattedWordBlocksList.formattedList(FakeDataSamples.fakeBlocksList)
+        )
     }
 }

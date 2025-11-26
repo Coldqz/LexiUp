@@ -1,27 +1,11 @@
 package com.coldzz.lexiup.features.words.presentation
 
-import android.content.res.Configuration
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
-import com.coldzz.lexiup.features.words.presentation.components.MySearchBar
-import com.coldzz.lexiup.features.words.presentation.components.WordListElement
+import com.coldzz.lexiup.features.words.presentation.components.WordListScreenContentComponent
 import com.coldzz.lexiup.features.words.presentation.viewmodel.WordsListViewModel
-import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
 @Composable
 fun WordListScreen(wordsListViewModel: WordsListViewModel = hiltViewModel()) {
@@ -31,58 +15,5 @@ fun WordListScreen(wordsListViewModel: WordsListViewModel = hiltViewModel()) {
     */
 
     val wordsList by wordsListViewModel.wordsList.collectAsState()
-    WordListScreenContent(wordsList)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun WordListScreenContent(
-    wordsList: List<OxfordWords>
-) {
-    Scaffold(
-        topBar = {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                MySearchBar(
-                    dataForSearch = wordsList
-                )
-
-            }
-
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            Modifier.padding(paddingValues)
-        ) {
-            items(
-                wordsList,
-                key = { word ->
-                    word.id
-                }
-            ) { word ->
-                WordListElement(
-                    title = word.word,
-                    level = word.level,
-                    partOfSpeech = word.partOfSpeech,
-                    // TODO: hardcoded for testing
-                    isAddedToReviewBlock = true
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
-)
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun WordListScreenPreview() {
-    LexiUpTheme {
-        WordListScreenContent(FakeDataSamples.fakeWordsList1)
-    }
+    WordListScreenContentComponent(wordsList)
 }

@@ -14,4 +14,7 @@ sealed class NavRoutes(val name: String, @param:DrawableRes val iconRes: Int) {
 
     @Serializable
     data object WordsScreen : NavRoutes("Words", R.drawable.ic_book)
+
+    @Serializable
+    data object ReviewBlock: NavRoutes("Review block", iconRes = 0)
 }

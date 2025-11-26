@@ -9,7 +9,7 @@ import androidx.room.Transaction
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockOxfordWords
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
-import com.coldzz.lexiup.features.blocks.data.local.entities.WordPreviewDetail
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -35,11 +35,11 @@ interface WordBlockDao {
 
     @Transaction
     @Query(
-        "SELECT w.word, w.part_of_speech, w.level " +
+        "SELECT w.* " +
                 "FROM oxford_words AS w " +
                 "JOIN word_block_oxford_words AS j " +
                 "ON w.id = j.word_id " +
                 "WHERE j.word_block_id = :blockId"
     )
-    fun getWordPreviewDetailsFromBlock(blockId: Int): Flow<List<WordPreviewDetail>>
+    fun getWordPreviewDetailsFromBlock(blockId: Int): Flow<List<OxfordWords>>
 }

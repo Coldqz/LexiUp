@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.coldzz.lexiup.features.blocks.presentation.ReviewBlockScreen
 import com.coldzz.lexiup.features.blocks.presentation.WordBlockScreen
 import com.coldzz.lexiup.features.navigation.BottomNavBar
 import com.coldzz.lexiup.features.navigation.NavRoutes
@@ -50,10 +51,13 @@ class MainActivity : ComponentActivity() {
                             ProfileScreen()
                         }
                         composable<NavRoutes.LearningScreen> {
-                            WordBlockScreen()
+                            WordBlockScreen(navController = navController)
                         }
                         composable<NavRoutes.WordsScreen> {
                             WordListScreen()
+                        }
+                        composable<NavRoutes.ReviewBlock> {
+                            ReviewBlockScreen()
                         }
                     }
                 }
