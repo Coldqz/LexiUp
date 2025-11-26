@@ -4,8 +4,8 @@ import com.coldzz.lexiup.features.blocks.data.local.WordBlockDao
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockOxfordWords
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordPreviewDetail
 import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
-import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -59,11 +59,10 @@ class WordBlockRepositoryImpl @Inject constructor(private val dao: WordBlockDao)
     }
 
     override suspend fun addWordToReviewBlock(wordId: Int) {
-        val reviewBlockId = getCachedReviewBlockId()
         dao.addWordsToBlock(
             listOf(
                 WordBlockOxfordWords(
-                    wordBlockId = reviewBlockId,
+                    wordBlockId = getCachedReviewBlockId(),
                     wordId = wordId
                 )
             )
@@ -82,7 +81,7 @@ class WordBlockRepositoryImpl @Inject constructor(private val dao: WordBlockDao)
         )
     }
 
-    override suspend fun getReviewBlockWords(): Flow<List<OxfordWords>> {
-        return dao.getReviewBlockWords()
+    override suspend fun getWordPreviewDetailsFromBlock(): Flow<List<WordPreviewDetail>> {
+        return dao.getWordPreviewDetailsFromBlock(blockId = getCachedReviewBlockId())
     }
 }
