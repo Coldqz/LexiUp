@@ -25,7 +25,7 @@ import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
     ]
 )
 data class WordBlockOxfordWords(
-    // TODO: check if we need id in cross table
+    // TODO: change it here so that words will be in "recent" order
     @ColumnInfo(name = "word_block_id")val wordBlockId:Int,
     @ColumnInfo(name = "word_id") val wordId: Int
 )

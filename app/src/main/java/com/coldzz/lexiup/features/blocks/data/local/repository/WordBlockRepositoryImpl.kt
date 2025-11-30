@@ -5,7 +5,7 @@ import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockOxfordWords
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
 import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
-import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -20,8 +20,9 @@ class WordBlockRepositoryImpl @Inject constructor(private val dao: WordBlockDao)
     * Function to get our review block id and cache it after.
     * It query the db, return id and caches id into cachedReviewBlockId
     * then every time just return the cached id until app repo is cleared
+    * We call it every first time when we need reviewBlockId and thus id wont be null
     * */
-    private suspend fun getCachedReviewBlockId(): Int {
+    override suspend fun getCachedReviewBlockId(): Int {
         cachedReviewBlockId?.let {
             return it
         }
@@ -81,7 +82,7 @@ class WordBlockRepositoryImpl @Inject constructor(private val dao: WordBlockDao)
         )
     }
 
-    override suspend fun getWordPreviewDetailsFromBlock(): Flow<List<OxfordWords>> {
-        return dao.getWordPreviewDetailsFromBlock(blockId = getCachedReviewBlockId())
+    override suspend fun getWordsFromBlock(): Flow<List<WordsWithReviewBlockIndicator>> {
+        return dao.getWordsFromBlock(blockId = getCachedReviewBlockId())
     }
 }

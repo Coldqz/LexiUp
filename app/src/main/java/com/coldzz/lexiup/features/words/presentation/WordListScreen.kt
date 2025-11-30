@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.coldzz.lexiup.features.words.presentation.components.WordListScreenContentComponent
+import com.coldzz.lexiup.features.words.presentation.components.WordListScreenComponent
 import com.coldzz.lexiup.features.words.presentation.viewmodel.WordsListViewModel
+
+private const val TAG = "WordListScreen"
 
 @Composable
 fun WordListScreen(wordsListViewModel: WordsListViewModel = hiltViewModel()) {
@@ -15,5 +17,8 @@ fun WordListScreen(wordsListViewModel: WordsListViewModel = hiltViewModel()) {
     */
 
     val wordsList by wordsListViewModel.wordsList.collectAsState()
-    WordListScreenContentComponent(wordsList)
+    WordListScreenComponent(
+        wordsList = wordsList,
+        enableSearchBar = true
+    ) { wordId -> wordsListViewModel.addWordToReviewBlock(wordId) }
 }

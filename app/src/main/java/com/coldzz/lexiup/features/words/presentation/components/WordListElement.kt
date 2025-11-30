@@ -26,7 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
+import com.coldzz.lexiup.features.words.domain.repository.ReviewBlockIndicator
 
+private const val TAG = "WordListElement"
 
 @Composable
 fun WordListElement(
@@ -34,6 +36,7 @@ fun WordListElement(
     level: LevelCerf,
     partOfSpeech: String,
     isAddedToReviewBlock: Boolean,
+    actionOnBookmarkButon:() -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -65,21 +68,24 @@ fun WordListElement(
                 Spacer(Modifier.width(16.dp))
                 Column {
                     Text(title, style = MaterialTheme.typography.titleMedium)
-                    Text("CERF Level: ${level.toString()}", style = MaterialTheme.typography.labelMedium)
+                    Text(
+                        "CERF Level: ${level.toString()}",
+                        style = MaterialTheme.typography.labelMedium
+                    )
                     Text(partOfSpeech, style = MaterialTheme.typography.labelMedium)
                 }
             }
             IconButton(
-                onClick = {}
+                onClick = actionOnBookmarkButon
             ) {
-                if (isAddedToReviewBlock){
+                if (isAddedToReviewBlock) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark_added),
+                        imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Added.resourceId),
                         contentDescription = stringResource(R.string.added_as_bookmark_icon)
                     )
                 } else {
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark_add),
+                        imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Add.resourceId),
                         contentDescription = stringResource(R.string.add_as_bookmark)
                     )
                 }
@@ -95,6 +101,7 @@ private fun WordListElementPreview() {
         "test",
         LevelCerf.A2,
         "asdas",
-        true
+        true,
+        actionOnBookmarkButon = {}
     )
 }

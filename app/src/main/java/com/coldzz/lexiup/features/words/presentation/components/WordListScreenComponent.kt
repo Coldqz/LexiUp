@@ -13,14 +13,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
+
+private const val TAG = "WordListScreenComponent"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WordListScreenContentComponent(
-    wordsList: List<OxfordWords>
+fun WordListScreenComponent(
+    wordsList: List<WordsWithReviewBlockIndicator>,
+    enableSearchBar: Boolean,
+    actionOnBookmarkButton: (wordId: Int) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -30,9 +33,12 @@ fun WordListScreenContentComponent(
                     .padding(bottom = 8.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
-                MySearchBar(
-                    dataForSearch = wordsList
-                )
+                if (enableSearchBar) {
+                    MySearchBar(
+                        dataForSearch = wordsList,
+                        actionOnBookmarkButon = actionOnBookmarkButton
+                    )
+                }
 
             }
 
@@ -52,20 +58,24 @@ fun WordListScreenContentComponent(
                     level = word.level,
                     partOfSpeech = word.partOfSpeech,
                     // TODO: hardcoded for testing
-                    isAddedToReviewBlock = true
+                    isAddedToReviewBlock = word.isInReviewBlock,
+                    actionOnBookmarkButon = { actionOnBookmarkButton(word.id) }
                 )
             }
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true,
+@Preview(
+    showBackground = true, showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
 )
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun WordListScreenPreview() {
+
+    // TODO: fix this
     LexiUpTheme {
-        WordListScreenContentComponent(FakeDataSamples.fakeWordsList1)
+//        WordListScreenContentComponent(FakeDataSamples.fakeWordsList1)
     }
 }

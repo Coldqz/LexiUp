@@ -5,11 +5,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockOxfordWords
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
-import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -33,13 +32,13 @@ interface WordBlockDao {
     @Query("SELECT id FROM word_block WHERE isPermanent = 1 LIMIT 1")
     suspend fun getReviewBlockId(): Int
 
-    @Transaction
     @Query(
-        "SELECT w.* " +
+        "SELECT w.*, " +
+                "CASE WHEN j.word_block_id IS NULL THEN 0 ELSE 1 END AS isInReviewBlock " +
                 "FROM oxford_words AS w " +
                 "JOIN word_block_oxford_words AS j " +
                 "ON w.id = j.word_id " +
                 "WHERE j.word_block_id = :blockId"
     )
-    fun getWordPreviewDetailsFromBlock(blockId: Int): Flow<List<OxfordWords>>
+    fun getWordsFromBlock(blockId: Int): Flow<List<WordsWithReviewBlockIndicator>>
 }

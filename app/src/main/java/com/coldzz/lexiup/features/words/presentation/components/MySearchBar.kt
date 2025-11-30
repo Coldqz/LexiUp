@@ -24,20 +24,20 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.coldzz.lexiup.R
-import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MySearchBar(
     modifier: Modifier = Modifier,
-    dataForSearch: List<OxfordWords>
+    dataForSearch: List<WordsWithReviewBlockIndicator>,
+    actionOnBookmarkButon:(wordId: Int) -> Unit
 ) {
     // Controls expansion state of the search bar
     var expanded by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf("") }
 
-    val filteredList: List<OxfordWords> = remember(query) {
+    val filteredList: List<WordsWithReviewBlockIndicator> = remember(query) {
         if (query.isBlank()) emptyList()
         else dataForSearch.asSequence()
             .filter { it.word.contains(query, ignoreCase = true) }
@@ -102,7 +102,8 @@ fun MySearchBar(
                         level = element.level,
                         partOfSpeech = element.partOfSpeech,
                         // TODO: hardcoded for testing
-                        isAddedToReviewBlock = false,
+                        isAddedToReviewBlock = element.isInReviewBlock,
+                        actionOnBookmarkButon = { actionOnBookmarkButon(element.id) }
                     )
                 }
             }
@@ -114,11 +115,11 @@ fun MySearchBar(
 @Preview
 @Composable
 private fun MySearchBarPreview() {
-    MySearchBar(
+    // TODO: fix this later
+    /*MySearchBar(
         modifier = Modifier,
         dataForSearch = FakeDataSamples.fakeWordsList1
-    )
-
+    )*/
 }
 
 
