@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
@@ -79,6 +80,11 @@ private fun WordListScreenPreview() {
 
     // TODO: fix this
     LexiUpTheme {
-//        WordListScreenContentComponent(FakeDataSamples.fakeWordsList1)
+        WordListScreenComponent(
+            FakeDataSamples.getMappedList(),
+            enableSearchBar = true,
+            actionAddToReviewBlock = {},
+            actionRemoveFromReviewBlock = {}
+        )
     }
 }

@@ -1,26 +1,41 @@
 package com.coldzz.lexiup.core.common
 
 import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
-import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlockWithOxfordWords
 import com.coldzz.lexiup.features.blocks.domain.BlockTypes
 import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
 import java.time.LocalDateTime
 
 class FakeDataSamples {
     companion object {
-        val fakeWordsList1 = mutableListOf(
+        private val fakeWordsList1 = mutableListOf(
             OxfordWords(id = 1537, word = "discover", partOfSpeech = "noun", level = LevelCerf.A2),
             OxfordWords(id = 5221, word = "swim", partOfSpeech = "verb", level = LevelCerf.A1),
-            OxfordWords(id = 4556,word = "run", partOfSpeech = "verb", level = LevelCerf.A2),
-            OxfordWords(id = 4255,word = "raw", partOfSpeech = "adjective", level = LevelCerf.C1),
-            OxfordWords(id = 2276,word = "funny", partOfSpeech = "adjective", level = LevelCerf.C1),
-            OxfordWords(id = 3815,word = "pencil", partOfSpeech = "adjective", level = LevelCerf.C1),
-            OxfordWords(id = 5883,word = "wooden", partOfSpeech = "adjective", level = LevelCerf.C1),
-            OxfordWords(id = 5882,word = "wood", partOfSpeech = "adjective", level = LevelCerf.C1),
-            OxfordWords(id = 2433,word = "hall", partOfSpeech = "adjective", level = LevelCerf.C1),
-            OxfordWords(id = 5461,word = "town", partOfSpeech = "adjective", level = LevelCerf.C1),
+            OxfordWords(id = 4556, word = "run", partOfSpeech = "verb", level = LevelCerf.A2),
+            OxfordWords(id = 4255, word = "raw", partOfSpeech = "adjective", level = LevelCerf.C1),
+            OxfordWords(id = 2276, word = "funny", partOfSpeech = "adjective", level = LevelCerf.C1),
+            OxfordWords(id = 3815, word = "pencil", partOfSpeech = "adjective", level = LevelCerf.C1),
+            OxfordWords(id = 5883, word = "wooden", partOfSpeech = "adjective", level = LevelCerf.C1),
+            OxfordWords(id = 5882, word = "wood", partOfSpeech = "adjective", level = LevelCerf.C1),
+            OxfordWords(id = 2433, word = "hall", partOfSpeech = "adjective", level = LevelCerf.C1),
+            OxfordWords(id = 5461, word = "town", partOfSpeech = "adjective", level = LevelCerf.C1),
         )
+
+        private fun List<OxfordWords>.mapToNewList(): List<WordsWithReviewBlockIndicator> {
+            return this.map { element ->
+                WordsWithReviewBlockIndicator(
+                    id = element.id,
+                    word = element.word,
+                    partOfSpeech = element.partOfSpeech,
+                    level = element.level,
+                    isLearned = element.isLearned,
+                    isInReviewBlock = (element.id % 2) == 0
+                )
+            }
+        }
+
+        fun getMappedList(): List<WordsWithReviewBlockIndicator> = fakeWordsList1.mapToNewList()
 
         val fakeBlocksList = listOf<WordBlock>(
             WordBlock(
@@ -56,31 +71,31 @@ class FakeDataSamples {
         )
 
 
-        val fakeBlocksWithOxfordWordsList = listOf<WordBlockWithOxfordWords>(
-            WordBlockWithOxfordWords(
-                wordBlock = fakeBlocksList[0],
-                words = fakeWordsList1
-            ),
-            WordBlockWithOxfordWords(
-                wordBlock = fakeBlocksList[1],
-                words = fakeWordsList1
-            ),
-            WordBlockWithOxfordWords(
-                wordBlock = fakeBlocksList[2],
-                words = fakeWordsList1
-            ),
-            WordBlockWithOxfordWords(
-                wordBlock = fakeBlocksList[3],
-                words = fakeWordsList1
-            ),
-            WordBlockWithOxfordWords(
-                wordBlock = fakeBlocksList[4],
-                words = fakeWordsList1
-            ),
-            WordBlockWithOxfordWords(
-                wordBlock = fakeBlocksList[5],
-                words = fakeWordsList1
-            )
+        /*val fakeBlocksWithOxfordWordsList = listOf<WordBlockWithOxfordWords>(
+        WordBlockWithOxfordWords(
+            wordBlock = fakeBlocksList[0],
+            words = fakeWordsList1
+        ),
+        WordBlockWithOxfordWords(
+            wordBlock = fakeBlocksList[1],
+            words = fakeWordsList1
+        ),
+        WordBlockWithOxfordWords(
+            wordBlock = fakeBlocksList[2],
+            words = fakeWordsList1
+        ),
+        WordBlockWithOxfordWords(
+            wordBlock = fakeBlocksList[3],
+            words = fakeWordsList1
+        ),
+        WordBlockWithOxfordWords(
+            wordBlock = fakeBlocksList[4],
+            words = fakeWordsList1
+        ),
+        WordBlockWithOxfordWords(
+            wordBlock = fakeBlocksList[5],
+            words = fakeWordsList1
         )
+    )*/
     }
 }

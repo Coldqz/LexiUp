@@ -103,11 +103,11 @@ fun WordListElement(
 @Composable
 private fun WordListElementPreview() {
     WordListElement(
-        "test",
-        LevelCerf.A2,
-        "asdas",
-        true,
-        {},
-        {}
+        title = "test",
+        level = LevelCerf.A2,
+        partOfSpeech = "asdas",
+        isAddedToReviewBlock = true,
+        actionAddToReviewBlock = {},
+        actionRemoveFromReviewBlock = {}
     )
 }

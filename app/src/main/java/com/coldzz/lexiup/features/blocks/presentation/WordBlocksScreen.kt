@@ -145,8 +145,8 @@ private fun WordBlocksScreenContent(
 private fun WordBlocksScreenContentPreview() {
     LexiUpTheme {
         WordBlocksScreenContent(
-            {},
-            {},
+            actionOnBookmarkButton = {},
+            actionOnInfoButton = {},
             blocksList = FormattedWordBlocksList.formattedList(FakeDataSamples.fakeBlocksList)
         )
     }

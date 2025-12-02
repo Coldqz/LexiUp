@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.coldzz.lexiup.R
+import com.coldzz.lexiup.core.common.FakeDataSamples
 import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -118,10 +119,12 @@ fun MySearchBar(
 @Composable
 private fun MySearchBarPreview() {
     // TODO: fix this later
-    /*MySearchBar(
+    MySearchBar(
         modifier = Modifier,
-        dataForSearch = FakeDataSamples.fakeWordsList1
-    )*/
+        dataForSearch = FakeDataSamples.getMappedList(),
+        actionAddToReviewBlock = {},
+        actionRemoveFromReviewBlock = {}
+    )
 }
 
 
