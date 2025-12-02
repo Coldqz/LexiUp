@@ -31,6 +31,12 @@ class WordsListViewModel @Inject constructor(private val wordsRepository: WordRe
         }
     }
 
+    fun removeWordFromReviewBlock(wordId: Int) {
+        viewModelScope.launch {
+            blocksRepository.removeWordFromReviewBlock(wordId)
+        }
+    }
+
     // TODO: for debug only, delete it after
     fun testWork() {
         Log.d(TAG, repository.toString())

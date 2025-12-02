@@ -70,7 +70,7 @@ class WordBlockRepositoryImpl @Inject constructor(private val dao: WordBlockDao)
         )
     }
 
-    override suspend fun deleteWordFromReviewBlock(wordId: Int) {
+    override suspend fun removeWordFromReviewBlock(wordId: Int) {
         val reviewBlockId = getCachedReviewBlockId()
         dao.deleteWordFromBlock(
             listOf(

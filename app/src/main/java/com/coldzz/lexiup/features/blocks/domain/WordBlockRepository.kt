@@ -18,7 +18,7 @@ interface WordBlockRepository {
 
     suspend fun addWordToReviewBlock(wordId: Int)
 
-    suspend fun deleteWordFromReviewBlock(wordId: Int)
+    suspend fun removeWordFromReviewBlock(wordId: Int)
 
     suspend fun getWordsFromBlock(): Flow<List<WordsWithReviewBlockIndicator>>
 }

@@ -31,7 +31,8 @@ import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlock
 fun MySearchBar(
     modifier: Modifier = Modifier,
     dataForSearch: List<WordsWithReviewBlockIndicator>,
-    actionOnBookmarkButon:(wordId: Int) -> Unit
+    actionAddToReviewBlock: (wordId: Int) -> Unit,
+    actionRemoveFromReviewBlock: (wordId: Int) -> Unit
 ) {
     // Controls expansion state of the search bar
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -103,7 +104,8 @@ fun MySearchBar(
                         partOfSpeech = element.partOfSpeech,
                         // TODO: hardcoded for testing
                         isAddedToReviewBlock = element.isInReviewBlock,
-                        actionOnBookmarkButon = { actionOnBookmarkButon(element.id) }
+                        actionAddToReviewBlock = { actionAddToReviewBlock(element.id) },
+                        actionRemoveFromReviewBlock = { actionRemoveFromReviewBlock(element.id) }
                     )
                 }
             }

@@ -36,7 +36,8 @@ fun WordListElement(
     level: LevelCerf,
     partOfSpeech: String,
     isAddedToReviewBlock: Boolean,
-    actionOnBookmarkButon:() -> Unit
+    actionAddToReviewBlock: () -> Unit,
+    actionRemoveFromReviewBlock: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -75,15 +76,19 @@ fun WordListElement(
                     Text(partOfSpeech, style = MaterialTheme.typography.labelMedium)
                 }
             }
-            IconButton(
-                onClick = actionOnBookmarkButon
-            ) {
-                if (isAddedToReviewBlock) {
+            if (isAddedToReviewBlock) {
+                IconButton(
+                    onClick = actionRemoveFromReviewBlock
+                ) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Added.resourceId),
+                        imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Remove.resourceId),
                         contentDescription = stringResource(R.string.added_as_bookmark_icon)
                     )
-                } else {
+                }
+            } else {
+                IconButton(
+                    onClick = actionAddToReviewBlock
+                ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Add.resourceId),
                         contentDescription = stringResource(R.string.add_as_bookmark)
@@ -102,6 +107,7 @@ private fun WordListElementPreview() {
         LevelCerf.A2,
         "asdas",
         true,
-        actionOnBookmarkButon = {}
+        {},
+        {}
     )
 }

@@ -19,6 +19,8 @@ fun WordListScreen(wordsListViewModel: WordsListViewModel = hiltViewModel()) {
     val wordsList by wordsListViewModel.wordsList.collectAsState()
     WordListScreenComponent(
         wordsList = wordsList,
-        enableSearchBar = true
-    ) { wordId -> wordsListViewModel.addWordToReviewBlock(wordId) }
+        enableSearchBar = true,
+        actionAddToReviewBlock = { wordId -> wordsListViewModel.addWordToReviewBlock(wordId) },
+        actionRemoveFromReviewBlock = { wordId -> wordsListViewModel.removeWordFromReviewBlock(wordId) }
+    )
 }

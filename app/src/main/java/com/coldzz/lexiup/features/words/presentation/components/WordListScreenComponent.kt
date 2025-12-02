@@ -23,7 +23,8 @@ private const val TAG = "WordListScreenComponent"
 fun WordListScreenComponent(
     wordsList: List<WordsWithReviewBlockIndicator>,
     enableSearchBar: Boolean,
-    actionOnBookmarkButton: (wordId: Int) -> Unit
+    actionAddToReviewBlock: (wordId: Int) -> Unit,
+    actionRemoveFromReviewBlock: (wordId: Int) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -36,7 +37,8 @@ fun WordListScreenComponent(
                 if (enableSearchBar) {
                     MySearchBar(
                         dataForSearch = wordsList,
-                        actionOnBookmarkButon = actionOnBookmarkButton
+                        actionAddToReviewBlock = actionAddToReviewBlock,
+                        actionRemoveFromReviewBlock = actionRemoveFromReviewBlock
                     )
                 }
 
@@ -59,7 +61,8 @@ fun WordListScreenComponent(
                     partOfSpeech = word.partOfSpeech,
                     // TODO: hardcoded for testing
                     isAddedToReviewBlock = word.isInReviewBlock,
-                    actionOnBookmarkButon = { actionOnBookmarkButton(word.id) }
+                    actionAddToReviewBlock = { actionAddToReviewBlock(word.id) },
+                    actionRemoveFromReviewBlock = { actionRemoveFromReviewBlock(word.id) }
                 )
             }
         }
