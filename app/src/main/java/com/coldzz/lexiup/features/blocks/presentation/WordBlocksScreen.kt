@@ -36,12 +36,18 @@ import com.coldzz.lexiup.features.navigation.NavRoutes
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
 @Composable
-fun WordBlockScreen(wordBlockViewModel: WordBlockViewModel = hiltViewModel(), navController: NavController) {
+fun WordBlockScreen(
+    wordBlockViewModel: WordBlockViewModel = hiltViewModel(),
+    navController: NavController
+) {
     val blocksList by wordBlockViewModel.blocksList.collectAsState()
     WordBlocksScreenContent(
         actionOnInfoButton = {},
         actionOnBookmarkButton = {
             navController.navigate(NavRoutes.ReviewBlock)
+        },
+        actionOnPlannedIconButton = {
+            navController.navigate(NavRoutes.BlockCreatingScreen)
         },
         blocksList = blocksList
     )
@@ -51,7 +57,8 @@ fun WordBlockScreen(wordBlockViewModel: WordBlockViewModel = hiltViewModel(), na
 @Composable
 private fun WordBlocksScreenContent(
     actionOnInfoButton: () -> Unit,
-    actionOnBookmarkButton:() -> Unit,
+    actionOnBookmarkButton: () -> Unit,
+    actionOnPlannedIconButton: () -> Unit,
     blocksList: FormattedWordBlocksList,
     modifier: Modifier = Modifier
 ) {
@@ -92,7 +99,7 @@ private fun WordBlocksScreenContent(
             item {
                 BlockCategoryDivider(
                     title = "Active blocks",
-                    enableAddButton = true,
+                    actionOnIconClick = {},
                     counter = ActiveBlocksCounter(3, 4)
                 )
             }
@@ -108,7 +115,7 @@ private fun WordBlocksScreenContent(
             item {
                 BlockCategoryDivider(
                     title = "Planned blocks",
-                    enableAddButton = true,
+                    actionOnIconClick = actionOnPlannedIconButton,
                     counter = null
                 )
             }
@@ -123,7 +130,6 @@ private fun WordBlocksScreenContent(
                 item {
                     BlockCategoryDivider(
                         title = "Learned blocks",
-                        enableAddButton = false,
                         counter = null
                     )
                 }
@@ -147,6 +153,7 @@ private fun WordBlocksScreenContentPreview() {
         WordBlocksScreenContent(
             actionOnBookmarkButton = {},
             actionOnInfoButton = {},
+            actionOnPlannedIconButton = {},
             blocksList = FormattedWordBlocksList.formattedList(FakeDataSamples.fakeBlocksList)
         )
     }

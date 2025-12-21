@@ -56,8 +56,8 @@ fun BlockCreatingScreenComponent(
     ) { paddingValues ->
         Box(
             modifier = Modifier
-                .padding(paddingValues)
                 .fillMaxSize()
+                .padding(bottom = paddingValues.calculateBottomPadding())
         ) {
             WordListScreenComponent(
                 wordsList = wordsList,

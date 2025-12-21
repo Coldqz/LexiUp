@@ -66,10 +66,8 @@ fun WordsListComponent(
                 isAddedToReviewBlock = word.isInReviewBlock,
                 actionAddToReviewBlock = { actionAddToReviewBlock(word.id) },
                 actionRemoveFromReviewBlock = { actionRemoveFromReviewBlock(word.id) },
-                isSelected = if (checkedList !== null) {
-                    checkedList.contains(word.id)
-                } else null,
-                onSelectedChange = if (onSelectedChange !== null) {
+                isSelected = checkedList?.contains(word.id),
+                onSelectedChange = if (onSelectedChange != null) {
                     {
                         Log.d(TAG, "onSelectedChange was invoked word id is: ${word.id}")
                         onSelectedChange(word.id)

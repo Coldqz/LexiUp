@@ -28,9 +28,9 @@ import com.coldzz.lexiup.ui.theme.LexiUpTheme
 @Composable
 fun BlockCategoryDivider(
     title: String,
-    enableAddButton: Boolean,
     counter: ActiveBlocksCounter?,
     modifier: Modifier = Modifier,
+    actionOnIconClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
@@ -54,9 +54,9 @@ fun BlockCategoryDivider(
                     fontWeight = FontWeight.Bold
                 )
             }
-            if (enableAddButton) {
+            actionOnIconClick?.let {
                 IconButton(
-                    onClick = {}
+                    onClick = actionOnIconClick
                 ) {
                     Icon(
                         modifier = Modifier
@@ -84,17 +84,17 @@ private fun BlockCategoryDividerPreview() {
         ) {
             BlockCategoryDivider(
                 title = "Active blocks",
-                enableAddButton = true,
+                actionOnIconClick = {},
                 counter = ActiveBlocksCounter(3, 4)
             )
             BlockCategoryDivider(
                 title = "Custom blocks",
-                enableAddButton = true,
+                actionOnIconClick = {},
                 counter = null
             )
             BlockCategoryDivider(
                 title = "Active blocks",
-                enableAddButton = false,
+                actionOnIconClick = null,
                 counter = null
             )
         }
