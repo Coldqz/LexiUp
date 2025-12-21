@@ -1,5 +1,6 @@
 package com.coldzz.lexiup.features.words.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +31,10 @@ import com.coldzz.lexiup.features.words.domain.repository.ReviewBlockIndicator
 
 private const val TAG = "WordListElement"
 
+/**
+ * if [isSelected] is null then multiselect mode is turned off,
+ * but when true or false it goes to multiselect mode and change icon to selected state or not
+ */
 @Composable
 fun WordListElement(
     title: String,
@@ -37,7 +42,9 @@ fun WordListElement(
     partOfSpeech: String,
     isAddedToReviewBlock: Boolean,
     actionAddToReviewBlock: () -> Unit,
-    actionRemoveFromReviewBlock: () -> Unit
+    actionRemoveFromReviewBlock: () -> Unit,
+    isSelected: Boolean? = null,
+    onSelectedChange: (() -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -76,23 +83,55 @@ fun WordListElement(
                     Text(partOfSpeech, style = MaterialTheme.typography.labelMedium)
                 }
             }
-            if (isAddedToReviewBlock) {
-                IconButton(
-                    onClick = actionRemoveFromReviewBlock
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Remove.resourceId),
-                        contentDescription = stringResource(R.string.added_as_bookmark_icon)
-                    )
+            // check if multiselect mode is activated, if not then act normal with bookmark icons
+            if (isSelected == null) {
+                if (isAddedToReviewBlock) {
+                    IconButton(
+                        onClick = actionRemoveFromReviewBlock
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Remove.resourceId),
+                            contentDescription = stringResource(R.string.added_as_bookmark_icon)
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = actionAddToReviewBlock
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Add.resourceId),
+                            contentDescription = stringResource(R.string.add_as_bookmark)
+                        )
+                    }
                 }
             } else {
-                IconButton(
-                    onClick = actionAddToReviewBlock
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(ReviewBlockIndicator.Add.resourceId),
-                        contentDescription = stringResource(R.string.add_as_bookmark)
-                    )
+                // check if element is selected and changes icon based on that
+                if (isSelected) {
+                    IconButton(
+                        onClick = {
+                            onSelectedChange?.invoke().also {
+                                Log.d(TAG, "onSelectedChange was invoked")
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_checked_circle),
+                            contentDescription = stringResource(R.string.select_icon_checked)
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = {
+                            onSelectedChange?.invoke().also {
+                                Log.d(TAG, "onSelectedChange was invoked")
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_circle),
+                            contentDescription = stringResource(R.string.select_icon_unchecked)
+                        )
+                    }
                 }
             }
         }
@@ -110,4 +149,29 @@ private fun WordListElementPreview() {
         actionAddToReviewBlock = {},
         actionRemoveFromReviewBlock = {}
     )
+}
+
+@Preview()
+@Composable
+private fun WordListElementMultiselectPreview() {
+    Column {
+        WordListElement(
+            title = "test",
+            level = LevelCerf.A2,
+            partOfSpeech = "asdas",
+            isAddedToReviewBlock = true,
+            actionAddToReviewBlock = {},
+            actionRemoveFromReviewBlock = {},
+            isSelected = true
+        )
+        WordListElement(
+            title = "test",
+            level = LevelCerf.A2,
+            partOfSpeech = "asdas",
+            isAddedToReviewBlock = true,
+            actionAddToReviewBlock = {},
+            actionRemoveFromReviewBlock = {},
+            isSelected = false
+        )
+    }
 }

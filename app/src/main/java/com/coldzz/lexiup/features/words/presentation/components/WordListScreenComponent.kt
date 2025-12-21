@@ -4,8 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -25,7 +23,11 @@ fun WordListScreenComponent(
     wordsList: List<WordsWithReviewBlockIndicator>,
     enableSearchBar: Boolean,
     actionAddToReviewBlock: (wordId: Int) -> Unit,
-    actionRemoveFromReviewBlock: (wordId: Int) -> Unit
+    actionRemoveFromReviewBlock: (wordId: Int) -> Unit,
+    actionOnSuggestWordsButton: (() -> Unit)? = null,
+    labelUnderSearchButton: String? = null,
+    checkedList: Set<Int>? = null,
+    onSelectedChange: ((Int) -> Unit)? = null
 ) {
     Scaffold(
         topBar = {
@@ -42,31 +44,19 @@ fun WordListScreenComponent(
                         actionRemoveFromReviewBlock = actionRemoveFromReviewBlock
                     )
                 }
-
             }
-
         }
     ) { paddingValues ->
-        LazyColumn(
-            Modifier.padding(paddingValues)
-        ) {
-            items(
-                wordsList,
-                key = { word ->
-                    word.id
-                }
-            ) { word ->
-                WordListElement(
-                    title = word.word,
-                    level = word.level,
-                    partOfSpeech = word.partOfSpeech,
-                    // TODO: hardcoded for testing
-                    isAddedToReviewBlock = word.isInReviewBlock,
-                    actionAddToReviewBlock = { actionAddToReviewBlock(word.id) },
-                    actionRemoveFromReviewBlock = { actionRemoveFromReviewBlock(word.id) }
-                )
-            }
-        }
+        WordsListComponent(
+            wordsList = wordsList,
+            actionAddToReviewBlock = actionAddToReviewBlock,
+            actionRemoveFromReviewBlock = actionRemoveFromReviewBlock,
+            labelUnderSearchButton = labelUnderSearchButton,
+            actionOnSuggestWordsButton = actionOnSuggestWordsButton,
+            checkedList = checkedList,
+            onSelectedChange = onSelectedChange,
+            modifier = Modifier.padding(paddingValues)
+        )
     }
 }
 
@@ -84,7 +74,7 @@ private fun WordListScreenPreview() {
             FakeDataSamples.getMappedList(),
             enableSearchBar = true,
             actionAddToReviewBlock = {},
-            actionRemoveFromReviewBlock = {}
+            actionRemoveFromReviewBlock = {},
         )
     }
 }

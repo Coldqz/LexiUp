@@ -8,4 +8,9 @@
     <string name="learning">Learning</string>
     <string name="add_as_bookmark">Add as bookmark</string>
     <string name="added_as_bookmark_icon">Added as bookmark icon</string>
+    <string name="block_creating_helper_text">"Pick words that you don't know or want to learn better. \n Or you can just search for the word you want."</string>
+    <string name="suggest_more_words">Suggest more words</string>
+    <string name="create_block">Create block</string>
+    <string name="select_icon_checked">Select icon checked</string>
+    <string name="select_icon_unchecked">Select icon unchecked</string>
 </resources>
