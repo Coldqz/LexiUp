@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.coldzz.lexiup.features.blocks.presentation.BlockCreatingScreen
 import com.coldzz.lexiup.features.blocks.presentation.ReviewBlockScreen
 import com.coldzz.lexiup.features.blocks.presentation.WordBlockScreen
 import com.coldzz.lexiup.features.navigation.BottomNavBar
@@ -58,6 +59,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<NavRoutes.ReviewBlock> {
                             ReviewBlockScreen()
+                        }
+                        composable<NavRoutes.BlockCreatingScreen> {
+                            BlockCreatingScreen()
                         }
                     }
                 }

@@ -17,4 +17,7 @@ sealed class NavRoutes(val name: String, @param:DrawableRes val iconRes: Int) {
 
     @Serializable
     data object ReviewBlock: NavRoutes("Review block", iconRes = 0)
+
+    @Serializable
+    data object BlockCreatingScreen: NavRoutes("BlockCreatingScreen", iconRes = 0)
 }

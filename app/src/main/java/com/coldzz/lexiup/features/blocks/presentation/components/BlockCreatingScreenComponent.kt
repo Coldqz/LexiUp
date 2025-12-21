@@ -28,7 +28,7 @@ import com.coldzz.lexiup.ui.theme.LexiUpTheme
 private const val TAG = "BlockCreatingScreenComponent"
 
 @Composable
-private fun BlockCreatingScreenComponent(
+fun BlockCreatingScreenComponent(
     wordsList: List<WordsWithReviewBlockIndicator>,
     actionOnCreateButton: () -> Unit,
     actionOnSuggestWordsButton: () -> Unit,
