@@ -9,6 +9,8 @@ interface WordRepository {
 
     suspend fun addWord(word: OxfordWords)
 
+    suspend fun getCachedWordsCount(): Int
+
     fun getWords(): Flow<List<OxfordWords>>
 
     fun getWordsAndReviewBlockIndicator(reviewBlockId: Int): Flow<List<WordsWithReviewBlockIndicator>>

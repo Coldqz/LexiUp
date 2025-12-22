@@ -16,6 +16,9 @@ interface WordDao {
     @Query("SELECT * from oxford_words")
     fun getWords(): Flow<List<OxfordWords>>
 
+    @Query("SELECT max(id) FROM oxford_words")
+    suspend fun getWordsCount():Int
+
     /*
     * This query is for retrieving all oxford words with isInReviewBlock indicator,
     * it also needs review block id to work, we can get it from blocks repository

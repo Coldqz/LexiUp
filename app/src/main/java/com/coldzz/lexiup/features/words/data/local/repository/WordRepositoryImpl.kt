@@ -8,6 +8,18 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class WordRepositoryImpl @Inject constructor(private val dao: WordDao): WordRepository {
+
+    private var cachedWordsCount: Int? = null
+
+    override suspend fun getCachedWordsCount(): Int {
+        cachedWordsCount?.let {
+            return it
+        }
+        val id = dao.getWordsCount()
+        cachedWordsCount = id
+        return id
+    }
+
     override suspend fun insertAllWords(wordsList: List<OxfordWords>) {
         return dao.insertAllWords(wordsList)
     }
