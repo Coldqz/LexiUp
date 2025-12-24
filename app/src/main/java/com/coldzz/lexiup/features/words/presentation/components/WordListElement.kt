@@ -40,7 +40,7 @@ fun WordListElement(
     title: String,
     level: LevelCerf,
     partOfSpeech: String,
-    isAddedToReviewBlock: Boolean,
+    isAddedToReviewBlock: Boolean? = null,
     actionAddToReviewBlock: () -> Unit,
     actionRemoveFromReviewBlock: () -> Unit,
     isSelected: Boolean? = null,
@@ -85,7 +85,7 @@ fun WordListElement(
             }
             // check if multiselect mode is activated, if not then act normal with bookmark icons
             if (isSelected == null) {
-                if (isAddedToReviewBlock) {
+                if (isAddedToReviewBlock == true) {
                     IconButton(
                         onClick = actionRemoveFromReviewBlock
                     ) {

@@ -65,8 +65,7 @@ fun ActiveWordBlockComponent(
             value = if (BlockTimeUtils.isTimeUp(remainingTime)) {
                 isActionButtonActive = true
                 "Available now"
-            }
-            else {
+            } else {
                 isActionButtonActive = false
                 "Available in: ${
                     String.format(
@@ -91,10 +90,7 @@ fun ActiveWordBlockComponent(
                 Button(
                     onClick = onActionButtonClick
                 ) {
-                    Text(
-                        text = stringResource(R.string.start),
-
-                        )
+                    Text(text = stringResource(R.string.start))
                 }
             } else {
                 Button(
@@ -105,12 +101,8 @@ fun ActiveWordBlockComponent(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = stringResource(R.string.start),
-                        )
-                        Icon(
-                            imageVector = Icons.Default.Lock, "Lock icon"
-                        )
+                        Text(text = stringResource(R.string.start))
+                        Icon(imageVector = Icons.Default.Lock, "Lock icon")
                     }
                 }
             }
@@ -132,16 +124,14 @@ fun LearnedWordBlockComponent(
     }
     CoreWordBlockComponent(
         title = title,
-        label = if (completionDate != null ) "Completed at: $completionDate" else null,
+        label = if (completionDate != null) "Completed at: $completionDate" else null,
         learningLevelEnabled = false,
         learningLevelIndicator = LearningLevelIndicator.One,
         actionButton = {
             Button(
                 onClick = onActionButtonClick
             ) {
-                Text(
-                    text = "Repeat",
-                )
+                Text(text = "Repeat")
             }
         }
     )
@@ -149,7 +139,7 @@ fun LearnedWordBlockComponent(
 
 // block without description and with another button to open
 @Composable
-fun CustomWordBlockComponent(
+fun PlannedWordBlockComponent(
     title: String,
     learningLevelIndicator: LearningLevelIndicator,
     onActionButtonClick: () -> Unit,
@@ -277,7 +267,7 @@ private fun ActiveWordBlockComponentPreview() {
 private fun LearnedWordBlockComponentPreview() {
     LexiUpTheme {
         LearnedWordBlockComponent(
-            title = FakeDataSamples.fakeBlocksList[4].title,
+            title = "Word Block ${FakeDataSamples.fakeBlocksList[4].id}",
             completedAt = FakeDataSamples.fakeBlocksList[5].completedAt!!,
             onActionButtonClick = {},
             modifier = Modifier
@@ -287,8 +277,8 @@ private fun LearnedWordBlockComponentPreview() {
 
 @Preview
 @Composable
-private fun CustomWordBlockComponentPreview() {
-    CustomWordBlockComponent(
+private fun PlannedWordBlockComponentPreview() {
+    PlannedWordBlockComponent(
         title = "Traveling",
         learningLevelIndicator = LearningLevelIndicator.Three,
         onActionButtonClick = {},

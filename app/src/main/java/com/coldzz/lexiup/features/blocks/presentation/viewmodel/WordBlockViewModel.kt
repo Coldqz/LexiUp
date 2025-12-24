@@ -3,8 +3,8 @@ package com.coldzz.lexiup.features.blocks.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.blocks.domain.FormattedWordBlocksList
 import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
+import com.coldzz.lexiup.features.blocks.presentation.BlockItemUiModelFormattedList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +17,13 @@ private const val TAG = "WordBlockViewModel"
 @HiltViewModel
 class WordBlockViewModel @Inject constructor(private val repository: WordBlockRepository): ViewModel() {
 
-    private val _blocksList: MutableStateFlow<FormattedWordBlocksList> = MutableStateFlow(FormattedWordBlocksList())
-    val blocksList: StateFlow<FormattedWordBlocksList> = _blocksList.asStateFlow()
+    private val _blocksList: MutableStateFlow<BlockItemUiModelFormattedList> = MutableStateFlow(BlockItemUiModelFormattedList())
+    val blocksList: StateFlow<BlockItemUiModelFormattedList> = _blocksList.asStateFlow()
 
     init {
         viewModelScope.launch {
             repository.getAllBlocks().collect { blockList ->
-                _blocksList.value = FormattedWordBlocksList.formattedList(blockList)
+                _blocksList.value = BlockItemUiModelFormattedList.formattedList(blockList)
             }
         }
     }

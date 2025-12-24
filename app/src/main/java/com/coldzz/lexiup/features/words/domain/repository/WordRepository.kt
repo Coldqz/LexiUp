@@ -5,13 +5,15 @@ import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlock
 import kotlinx.coroutines.flow.Flow
 
 interface WordRepository {
-    suspend fun insertAllWords(wordsList: List<OxfordWords>)
+    suspend fun insertWords(wordsList: List<OxfordWords>)
 
     suspend fun addWord(word: OxfordWords)
 
+    suspend fun getWords(wordIdList: List<Int>): List<OxfordWords>
+
     suspend fun getCachedWordsCount(): Int
 
-    fun getWords(): Flow<List<OxfordWords>>
+    fun getAllWordsFlow(): Flow<List<OxfordWords>>
 
     fun getWordsAndReviewBlockIndicator(reviewBlockId: Int): Flow<List<WordsWithReviewBlockIndicator>>
 }

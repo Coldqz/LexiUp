@@ -24,13 +24,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.blocks.domain.FormattedWordBlocksList
 import com.coldzz.lexiup.features.blocks.domain.LearningLevelIndicator
 import com.coldzz.lexiup.features.blocks.presentation.components.ActiveBlocksCounter
 import com.coldzz.lexiup.features.blocks.presentation.components.ActiveWordBlockComponent
 import com.coldzz.lexiup.features.blocks.presentation.components.BlockCategoryDivider
-import com.coldzz.lexiup.features.blocks.presentation.components.CustomWordBlockComponent
 import com.coldzz.lexiup.features.blocks.presentation.components.LearnedWordBlockComponent
+import com.coldzz.lexiup.features.blocks.presentation.components.PlannedWordBlockComponent
 import com.coldzz.lexiup.features.blocks.presentation.viewmodel.WordBlockViewModel
 import com.coldzz.lexiup.features.navigation.NavRoutes
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
@@ -59,7 +58,7 @@ private fun WordBlocksScreenContent(
     actionOnInfoButton: () -> Unit,
     actionOnBookmarkButton: () -> Unit,
     actionOnPlannedIconButton: () -> Unit,
-    blocksList: FormattedWordBlocksList,
+    blocksList: BlockItemUiModelFormattedList,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -105,7 +104,7 @@ private fun WordBlocksScreenContent(
             }
             items(blocksList.activeBlocks) { block ->
                 ActiveWordBlockComponent(
-                    title = block.title,
+                    title = "Word Block ${block.blockNumber}",
                     learningLevelIndicator = LearningLevelIndicator.One,
                     // TODO: check if is it dangerous to use !! here
                     availableAt = block.availableAt!!,
@@ -120,8 +119,8 @@ private fun WordBlocksScreenContent(
                 )
             }
             items(blocksList.plannedBlocks) { block ->
-                CustomWordBlockComponent(
-                    title = block.title,
+                PlannedWordBlockComponent(
+                    title = "Word Block ${block.blockNumber}",
                     learningLevelIndicator = LearningLevelIndicator.One,
                     onActionButtonClick = { },
                 )
@@ -135,7 +134,7 @@ private fun WordBlocksScreenContent(
                 }
                 items(blocksList.learnedBlocks) { block ->
                     LearnedWordBlockComponent(
-                        title = block.title,
+                        title = "Word Block ${block.blockNumber}",
                         // TODO: check if is it dangerous to use !! here
                         completedAt = block.completedAt,
                         onActionButtonClick = { },
@@ -154,7 +153,7 @@ private fun WordBlocksScreenContentPreview() {
             actionOnBookmarkButton = {},
             actionOnInfoButton = {},
             actionOnPlannedIconButton = {},
-            blocksList = FormattedWordBlocksList.formattedList(FakeDataSamples.fakeBlocksList)
+            blocksList = BlockItemUiModelFormattedList.formattedList(FakeDataSamples.fakeBlocksList)
         )
     }
 }

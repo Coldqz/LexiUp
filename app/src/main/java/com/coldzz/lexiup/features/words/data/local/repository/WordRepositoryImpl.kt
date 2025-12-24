@@ -20,12 +20,16 @@ class WordRepositoryImpl @Inject constructor(private val dao: WordDao): WordRepo
         return id
     }
 
-    override suspend fun insertAllWords(wordsList: List<OxfordWords>) {
-        return dao.insertAllWords(wordsList)
+    override suspend fun insertWords(wordsList: List<OxfordWords>) {
+        return dao.insertWords(wordsList)
     }
 
-    override fun getWords(): Flow<List<OxfordWords>> {
-        return dao.getWords()
+    override suspend fun getWords(wordIdList: List<Int>): List<OxfordWords> {
+        return dao.getWords(wordIdList)
+    }
+
+    override fun getAllWordsFlow(): Flow<List<OxfordWords>> {
+        return dao.getAllWordsFlow()
     }
 
     override suspend fun addWord(word: OxfordWords) {

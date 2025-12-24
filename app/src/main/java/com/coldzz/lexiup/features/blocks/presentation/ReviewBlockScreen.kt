@@ -11,7 +11,8 @@ import com.coldzz.lexiup.features.words.presentation.components.WordListScreenCo
 fun ReviewBlockScreen(reviewViewModel: ReviewBlockScreenViewModel = hiltViewModel()) {
     val wordsList by reviewViewModel.wordsDetailList.collectAsState()
     WordListScreenComponent(
-        wordsList, false,
+        wordsList = wordsList,
+        enableSearchBar = false,
         actionAddToReviewBlock = { wordId -> reviewViewModel.addWordToReviewBlock(wordId) },
         actionRemoveFromReviewBlock = { wordId -> reviewViewModel.removeWordFromReviewBlock(wordId) })
 }

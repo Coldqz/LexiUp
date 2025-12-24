@@ -25,13 +25,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
+import com.coldzz.lexiup.features.words.presentation.WordItemUiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MySearchBar(
     modifier: Modifier = Modifier,
-    dataForSearch: List<WordsWithReviewBlockIndicator>,
+    dataForSearch: List<WordItemUiModel>,
     actionAddToReviewBlock: (wordId: Int) -> Unit,
     actionRemoveFromReviewBlock: (wordId: Int) -> Unit
 ) {
@@ -39,7 +39,7 @@ fun MySearchBar(
     var expanded by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf("") }
 
-    val filteredList: List<WordsWithReviewBlockIndicator> = remember(query) {
+    val filteredList: List<WordItemUiModel> = remember(query) {
         if (query.isBlank()) emptyList()
         else dataForSearch.asSequence()
             .filter { it.word.contains(query, ignoreCase = true) }
@@ -121,7 +121,7 @@ private fun MySearchBarPreview() {
     // TODO: fix this later
     MySearchBar(
         modifier = Modifier,
-        dataForSearch = FakeDataSamples.getMappedList(),
+        dataForSearch = FakeDataSamples.getUiModelMappedList(),
         actionAddToReviewBlock = {},
         actionRemoveFromReviewBlock = {}
     )

@@ -11,10 +11,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WordDao {
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
-    suspend fun insertAllWords(wordsList: List<OxfordWords>)
+    suspend fun insertWords(wordsList: List<OxfordWords>)
+
+    @Query("SELECT * FROM oxford_words WHERE id IN (:wordIdList)")
+    suspend fun getWords(wordIdList: List<Int>): List<OxfordWords>
 
     @Query("SELECT * from oxford_words")
-    fun getWords(): Flow<List<OxfordWords>>
+    fun getAllWordsFlow(): Flow<List<OxfordWords>>
 
     @Query("SELECT max(id) FROM oxford_words")
     suspend fun getWordsCount():Int

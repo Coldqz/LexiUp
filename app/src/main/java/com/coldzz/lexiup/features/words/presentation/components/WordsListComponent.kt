@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
+import com.coldzz.lexiup.features.words.presentation.WordItemUiModel
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
 private const val TAG = "WordListComponent"
@@ -28,7 +28,7 @@ private const val TAG = "WordListComponent"
  * */
 @Composable
 fun WordsListComponent(
-    wordsList: List<WordsWithReviewBlockIndicator>,
+    wordsList: List<WordItemUiModel>,
     actionAddToReviewBlock: (Int) -> Unit,
     actionRemoveFromReviewBlock: (Int) -> Unit,
     labelUnderSearchButton: String? = null,
@@ -104,7 +104,7 @@ fun WordsListComponent(
 private fun WordsListComponentPreview() {
     LexiUpTheme {
         WordsListComponent(
-            wordsList = FakeDataSamples.getMappedList(),
+            wordsList = FakeDataSamples.getUiModelMappedList(),
             actionAddToReviewBlock = {},
             actionRemoveFromReviewBlock = {},
             labelUnderSearchButton = stringResource(R.string.block_creating_helper_text),

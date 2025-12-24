@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
+import com.coldzz.lexiup.features.words.presentation.WordItemUiModel
 import com.coldzz.lexiup.features.words.presentation.components.WordListScreenComponent
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
@@ -29,7 +29,7 @@ private const val TAG = "BlockCreatingScreenComponent"
 
 @Composable
 fun BlockCreatingScreenComponent(
-    wordsList: List<WordsWithReviewBlockIndicator>,
+    wordsList: List<WordItemUiModel>,
     actionOnCreateButton: () -> Unit,
     actionOnSuggestWordsButton: () -> Unit,
     actionAddToReviewBlock: (Int) -> Unit,
@@ -83,7 +83,7 @@ private fun BlockCreatingScreenComponentPreview() {
     val checkedList = remember { mutableStateSetOf(5221, 3815, 5882) }
     LexiUpTheme {
         BlockCreatingScreenComponent(
-            wordsList = FakeDataSamples.getMappedList(),
+            wordsList = FakeDataSamples.getUiModelMappedList(),
             actionOnCreateButton = {},
             actionOnSuggestWordsButton = {},
             actionAddToReviewBlock = {},

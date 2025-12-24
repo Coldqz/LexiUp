@@ -16,7 +16,7 @@ fun BlockCreatingScreen(blockCreatingViewModel: BlockCreatingViewModel = hiltVie
     BlockCreatingScreenComponent(
         wordsList = blockCreatingUiState.wordsList,
         actionOnCreateButton = {},
-        actionOnSuggestWordsButton = {},
+        actionOnSuggestWordsButton = { blockCreatingViewModel.suggestWords() },
         actionAddToReviewBlock = {},
         actionRemoveFromReviewBlock = {},
         checkedList = blockCreatingUiState.checkedList,

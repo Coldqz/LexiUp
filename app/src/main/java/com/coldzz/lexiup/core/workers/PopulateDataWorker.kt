@@ -56,11 +56,10 @@ class PopulateDataWorker @AssistedInject constructor(
                 )
             }?.let { generatedWords ->
                 // insert all of the generated words
-                wordRepository.insertAllWords(generatedWords)
+                wordRepository.insertWords(generatedWords)
                 // creation of reviewBlock
                 wordBlockRepository.addBlock(
                     WordBlock(
-                        title = "Review Block",
                         blockType = BlockTypes.ACTIVE,
                         isPermanent = true
                     )

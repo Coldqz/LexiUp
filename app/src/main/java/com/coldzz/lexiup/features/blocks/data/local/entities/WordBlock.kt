@@ -10,7 +10,6 @@ import java.time.LocalDateTime
 @Entity(tableName = "word_block")
 data class WordBlock(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "learning_level") val learningLevel: LearningLevelIndicator = LearningLevelIndicator.One,
     @ColumnInfo(name = "block_type") val blockType: BlockTypes,
     @ColumnInfo(name = "available_at") val availableAt: LocalDateTime? = null,

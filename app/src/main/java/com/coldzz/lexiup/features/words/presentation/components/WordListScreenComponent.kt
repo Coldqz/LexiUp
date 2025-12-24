@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.coldzz.lexiup.core.common.FakeDataSamples
-import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
+import com.coldzz.lexiup.features.words.presentation.WordItemUiModel
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
 
 private const val TAG = "WordListScreenComponent"
@@ -20,7 +20,7 @@ private const val TAG = "WordListScreenComponent"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WordListScreenComponent(
-    wordsList: List<WordsWithReviewBlockIndicator>,
+    wordsList: List<WordItemUiModel>,
     enableSearchBar: Boolean,
     actionAddToReviewBlock: (wordId: Int) -> Unit,
     actionRemoveFromReviewBlock: (wordId: Int) -> Unit,
@@ -71,7 +71,7 @@ private fun WordListScreenPreview() {
     // TODO: fix this
     LexiUpTheme {
         WordListScreenComponent(
-            FakeDataSamples.getMappedList(),
+            FakeDataSamples.getUiModelMappedList(),
             enableSearchBar = true,
             actionAddToReviewBlock = {},
             actionRemoveFromReviewBlock = {},

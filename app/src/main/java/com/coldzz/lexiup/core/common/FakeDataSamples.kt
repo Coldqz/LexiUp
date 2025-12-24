@@ -5,11 +5,12 @@ import com.coldzz.lexiup.features.blocks.domain.BlockTypes
 import com.coldzz.lexiup.features.words.data.local.entities.LevelCerf
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import com.coldzz.lexiup.features.words.data.local.entities.WordsWithReviewBlockIndicator
+import com.coldzz.lexiup.features.words.presentation.WordItemUiModel
 import java.time.LocalDateTime
 
 class FakeDataSamples {
     companion object {
-        private val fakeWordsList1 = mutableListOf(
+        val fakeWordsList1 = mutableListOf(
             OxfordWords(id = 1537, word = "discover", partOfSpeech = "noun", level = LevelCerf.A2),
             OxfordWords(id = 5221, word = "swim", partOfSpeech = "verb", level = LevelCerf.A1),
             OxfordWords(id = 4556, word = "run", partOfSpeech = "verb", level = LevelCerf.A2),
@@ -22,7 +23,20 @@ class FakeDataSamples {
             OxfordWords(id = 5461, word = "town", partOfSpeech = "adjective", level = LevelCerf.C1),
         )
 
-        private fun List<OxfordWords>.mapToNewList(): List<WordsWithReviewBlockIndicator> {
+        private fun List<OxfordWords>.mapToUiModel(): List<WordItemUiModel> {
+            return this.map { element ->
+                WordItemUiModel(
+                    id = element.id,
+                    word = element.word,
+                    partOfSpeech = element.partOfSpeech,
+                    level = element.level,
+                    isLearned = element.isLearned,
+                    isInReviewBlock = (element.id % 2) == 0
+                )
+            }
+        }
+
+        private fun List<OxfordWords>.mapToReviewIndicatorList(): List<WordsWithReviewBlockIndicator> {
             return this.map { element ->
                 WordsWithReviewBlockIndicator(
                     id = element.id,
@@ -35,36 +49,38 @@ class FakeDataSamples {
             }
         }
 
-        fun getMappedList(): List<WordsWithReviewBlockIndicator> = fakeWordsList1.mapToNewList()
+        fun getUiModelMappedList(): List<WordItemUiModel> = fakeWordsList1.mapToUiModel()
+
+        fun getReviewIndicatorList() = fakeWordsList1.mapToReviewIndicatorList()
 
         val fakeBlocksList = listOf<WordBlock>(
             WordBlock(
-                title = "ActiveBlock1",
+                id = 1,
                 blockType = BlockTypes.ACTIVE,
                 availableAt = LocalDateTime.now().plusMinutes(1)
             ),
             WordBlock(
-                title = "ActiveBlock2",
+                id = 2,
                 blockType = BlockTypes.ACTIVE,
                 availableAt = LocalDateTime.now().plusMinutes(2)
             ),
             WordBlock(
-                title = "PlannedBlock1",
+                id = 3,
                 blockType = BlockTypes.PLANNED,
                 availableAt = LocalDateTime.now().plusHours(4)
             ),
             WordBlock(
-                title = "PlannedBlock2",
+                id = 4,
                 blockType = BlockTypes.PLANNED,
                 availableAt = LocalDateTime.now().plusHours(2)
             ),
             WordBlock(
-                title = "LearnedBlock1",
+                id = 6,
                 blockType = BlockTypes.LEARNED,
                 completedAt = LocalDateTime.now().minusDays(4)
             ),
             WordBlock(
-                title = "LearnedBlock2",
+                id = 7,
                 blockType = BlockTypes.LEARNED,
                 completedAt = LocalDateTime.now().minusDays(3)
             )
