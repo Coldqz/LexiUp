@@ -1,0 +1,81 @@
+package com.coldzz.lexiup.core.workers
+
+import android.content.Context
+import android.util.Log
+import androidx.hilt.work.HiltWorker
+import androidx.work.CoroutineWorker
+import androidx.work.WorkerParameters
+import com.coldzz.lexiup.core.common.CerfLevel
+import com.coldzz.lexiup.core.common.Constants
+import com.coldzz.lexiup.features.blocks.data.local.entities.WordBlock
+import com.coldzz.lexiup.features.blocks.domain.BlockTypes
+import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
+import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
+import com.coldzz.lexiup.features.words.data.local.prepopulate.WordsPrepopulatedModel
+import com.coldzz.lexiup.features.words.domain.repository.WordRepository
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+// worker for populating db with data from json file on background thread
+@HiltWorker
+class PopulateDataWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted workerParameters: WorkerParameters,
+    val moshi: Moshi,
+    val wordRepository: WordRepository,
+    val wordBlockRepository: WordBlockRepository
+) : CoroutineWorker(context, workerParameters) {
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        Log.i(TAG, "Work request triggered")
+        try {
+            // reading data from json file
+            val type = Types.newParameterizedType(List::class.java, WordsPrepopulatedModel::class.java)
+            val jsonAdapter = moshi.adapter<List<WordsPrepopulatedModel>>(type)
+            val wordsString = applicationContext.assets.open(Constants.WORDS_JSON).bufferedReader()
+                .use { it.readText() }
+            val wordsList = jsonAdapter.fromJson(wordsString)
+
+            // creating list of OxfordWords out of json to bulk insert it into the db
+            wordsList?.map { element ->
+                OxfordWords(
+                    word = element.word,
+                    partOfSpeech = element.partOfSpeech,
+                    level = when (element.level) {
+                        "a1" -> CerfLevel.A1
+                        "a2" -> CerfLevel.A2
+                        "b1" -> CerfLevel.B1
+                        "b2" -> CerfLevel.B2
+                        "c1" -> CerfLevel.C1
+                        "c2" -> CerfLevel.C2
+                        else -> throw IllegalArgumentException("Unknown Cerf level: ${element.level}, word: ${element.word}")
+                    }
+                )
+            }?.let { generatedWords ->
+                // insert all the generated words
+                wordRepository.insertWords(generatedWords)
+                // creation of reviewBlock
+                wordBlockRepository.addBlock(
+                    WordBlock(
+                        blockType = BlockTypes.ACTIVE,
+                        isPermanent = true,
+                        blockNumber = Constants.REVIEW_BLOCK_NUMBER
+                    )
+                )
+            }
+            Log.i(TAG, "Work request ended")
+            Result.success()
+        } catch (ex: Exception) {
+            Log.e(TAG, "Error populating database", ex)
+            Result.failure()
+        }
+
+    }
+
+    companion object {
+        private const val TAG = "PopulateDataWorker"
+    }
+}
