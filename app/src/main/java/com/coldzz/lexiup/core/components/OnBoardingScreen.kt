@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -22,7 +23,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -235,11 +239,13 @@ private fun OnBoardingPage(
     page: OnBoardingPageData,
     isLandscape: Boolean
 ) {
+    val scrollState = rememberScrollState()
     if (isLandscape) {
         Row(
             modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = 40.dp, vertical = 8.dp),
+                .verticalScroll(scrollState)
+                .padding(horizontal = 40.dp, vertical = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -247,7 +253,7 @@ private fun OnBoardingPage(
                 painter = painterResource(id = page.imageRes),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(200.dp)
+                    .heightIn(max = 200.dp)
                     .weight(1f)
             )
             Spacer(modifier = Modifier.width(32.dp))
@@ -275,14 +281,19 @@ private fun OnBoardingPage(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = 40.dp),
+                .verticalScroll(scrollState)
+                .padding(horizontal = 40.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Image(
                 painter = painterResource(id = page.imageRes),
                 contentDescription = null,
-                modifier = Modifier.size(280.dp)
+                modifier = Modifier
+                    .heightIn(max = 280.dp)
+                    .fillMaxWidth()
+                    .weight(1f, fill = false),
+                contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
