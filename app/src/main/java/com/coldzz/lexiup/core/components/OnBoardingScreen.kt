@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -91,7 +93,7 @@ private fun OnBoardingScreenComponent(
     val pagerState = rememberPagerState(pageCount = { boardingData.size })
     val scope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().safeDrawingPadding()) {
         // Skip button at the top, navigate to the last page (wrapped in AnimatedVisibility for smooth entry/exit)
         Box(
             modifier = Modifier
@@ -263,6 +265,7 @@ private fun OnBoardingPage(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = page.description,
+                    modifier = Modifier.widthIn(max = 488.dp),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center
                 )
@@ -291,6 +294,7 @@ private fun OnBoardingPage(
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = page.description,
+                modifier = Modifier.widthIn(max = 488.dp),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
             )
