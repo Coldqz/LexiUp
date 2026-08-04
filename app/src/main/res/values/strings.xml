@@ -54,8 +54,10 @@
     <string name="connection_error_icon">Connection error icon</string>
     <string name="please_check_your_internet_connection_and_try_again">Please check your internet connection and try again.</string>
     <string name="connection_failed">Connection failed</string>
+    <string name="server_unavailable">Service Unavailable</string>
     <string name="completed">Completed</string>
     <string name="an_unexpected_error_occurred_please_try_again_later">An unexpected error occurred. Please try again later.</string>
+    <string name="server_error_description">The dictionary service is temporarily unavailable. This is an external issue, please try again in a few moments.</string>
     <string name="oops_something_went_wrong">Oops! Something went wrong</string>
     <string name="retry">Retry</string>
     <string name="exit">Exit</string>

@@ -51,51 +51,11 @@ class WordRepositoryImpl @Inject constructor(
         return dao.getSingleWordDetailsFlow(wordId, reviewBlockId)
             .onEach { flowValue ->
                 if (flowValue.wordDetails == null) {
-                    // when we have no data in the DB
-                    try {
-                        // run api request and write answer into the DB
-                        val response =
-                            dictionaryApi.getWord(flowValue.word.trim())
-                                .toDatabaseEntity(wordId, flowValue.partOfSpeech)
-                        dao.insertApiResponse(response.details, response.meanings)
-                    } catch (e: HttpException) {
-                        // catch any api errors
-                        when (e.code()) {
-                            404 -> {
-                                Log.e(TAG, "Word not found (404) for wordId: $wordId. Inserting placeholder.")
-                                // case when api doesn't have this definition
-                                val placeholder = createPlaceholderDetails(wordId)
-                                dao.insertApiResponse(placeholder.details, placeholder.meanings)
-                            }
-                            429 -> {
-                                Log.w(TAG, "Rate limited (429) for wordId: $wordId. Retrying...")
-                                // case when api returns "too many requests", we wait and retry
-                                delay(2500.milliseconds)
-                                try {
-                                    val response = dictionaryApi.getWord(flowValue.word.trim())
-                                        .toDatabaseEntity(wordId, flowValue.partOfSpeech)
-                                    dao.insertApiResponse(response.details, response.meanings)
-                                } catch (retryException: Exception) {
-                                    Log.e(TAG, "Retry failed for wordId: $wordId after 429.", retryException)
-                                    // If retry fails, we can either throw and insert a placeholder to avoid infinite loading
-                                    val placeholder = createPlaceholderDetails(wordId)
-                                    dao.insertApiResponse(placeholder.details, placeholder.meanings)
-                                }
-                            }
-                            else -> {
-                                Log.e(TAG, "HttpException ${e.code()} for wordId: $wordId")
-                                throw e
-                            }
-                        }
-                    }
-                    catch (otherException: Exception) {
-                        if (otherException.isNetworkError()) {
-                            Log.e(TAG, "IOException during fetch for word: ${flowValue.word}", otherException)
-                        } else {
-                            Log.e(TAG, "Unexpected exception during fetch for word: ${flowValue.word}", otherException)
-                        }
-                        throw otherException
-                    }
+                    fetchAndCacheWordDetails(
+                        word = flowValue.word,
+                        wordId = wordId,
+                        partOfSpeech = flowValue.partOfSpeech
+                    )
                 }
             }
             .map { flowValue ->
@@ -121,48 +81,13 @@ class WordRepositoryImpl @Inject constructor(
             cachedWordIds = dao.isWordsCached(flowValue.map { it.id })
             flowValue.forEach { element ->
                 if (element.id !in cachedWordIds) {
-                    try {
-                        // Base delay to prevent http 429
-                        delay(500.milliseconds)
-                        val response =
-                            dictionaryApi.getWord(element.word.trim()).toDatabaseEntity(
-                                element.id,
-                                element.partOfSpeech
-                            )
-                        dao.insertApiResponse(response.details, response.meanings)
-                    } catch (e: HttpException) {
-                        if (e.code() == 404) {
-                            Log.e(TAG, "Word not found (404) for element: ${element.word} (ID: ${element.id})")
-                            val placeholder = createPlaceholderDetails(element.id)
-                            dao.insertApiResponse(placeholder.details, placeholder.meanings)
-                        } else if (e.code() == 429) {
-                            Log.w(TAG, "Rate limited (429) for element: ${element.word}. Retrying...")
-                            // On 429, wait longer and try again
-                            delay(5000.milliseconds)
-                            try {
-                                val response = dictionaryApi.getWord(element.word.trim()).toDatabaseEntity(
-                                    element.id,
-                                    element.partOfSpeech
-                                )
-                                dao.insertApiResponse(response.details, response.meanings)
-                            } catch (e2: Exception) {
-                                Log.e(TAG, "Retry failed for element: ${element.word} after 429.", e2)
-                                // If it still fails after retry, insert placeholder to stop infinite loading
-                                val placeholder = createPlaceholderDetails(element.id)
-                                dao.insertApiResponse(placeholder.details, placeholder.meanings)
-                            }
-                        } else {
-                            Log.e(TAG, "HttpException ${e.code()} during batch fetch for word: ${element.word}")
-                            throw e
-                        }
-                    } catch (otherException: Exception) {
-                        if (otherException.isNetworkError()) {
-                            Log.e(TAG, "IOException during fetch for word: ${element.word}", otherException)
-                        } else {
-                            Log.e(TAG, "Unexpected exception during fetch for word: ${element.word}", otherException)
-                        }
-                        throw otherException
-                    }
+                    // Base delay to prevent http 429 during batch fetch
+                    delay(500.milliseconds)
+                    fetchAndCacheWordDetails(
+                        word = element.word,
+                        wordId = element.id,
+                        partOfSpeech = element.partOfSpeech
+                    )
                 }
             }
         }.map { flowValue ->
@@ -191,5 +116,60 @@ class WordRepositoryImpl @Inject constructor(
         avoidIds: List<Int>
     ): List<OxfordWords> {
         return dao.getRandomWords(limit, reviewBlockId, avoidIds)
+    }
+
+    private suspend fun fetchAndCacheWordDetails(
+        word: String,
+        wordId: Int,
+        partOfSpeech: String,
+        maxRetries: Int = 3
+    ) {
+        var currentAttempt = 0
+        var delayTime = 1000L
+
+        while (currentAttempt <= maxRetries) {
+            try {
+                val response = dictionaryApi.getWord(word.trim()).toDatabaseEntity(wordId, partOfSpeech)
+                dao.insertApiResponse(response.details, response.meanings)
+                return
+            } catch (e: HttpException) {
+                val code = e.code()
+                if (code == 404) {
+                    Log.e(TAG, "Word not found (404) for word: $word. Inserting placeholder.")
+                    val placeholder = createPlaceholderDetails(wordId)
+                    dao.insertApiResponse(placeholder.details, placeholder.meanings)
+                    return
+                }
+
+                if (code in listOf(429, 500, 502, 503, 504)) {
+                    currentAttempt++
+                    if (currentAttempt > maxRetries) {
+                        Log.e(TAG, "Max retries reached for word: $word after HTTP $code")
+                        throw e
+                    }
+                    val waitTime = if (code == 429) 5000L else delayTime
+                    Log.w(TAG, "HTTP $code for word: $word. Retry attempt $currentAttempt after ${waitTime}ms...")
+                    delay(waitTime.milliseconds)
+                    if (code != 429) delayTime *= 2
+                } else {
+                    Log.e(TAG, "Non-retryable HttpException $code for word: $word")
+                    throw e
+                }
+            } catch (e: Exception) {
+                if (e.isNetworkError()) {
+                    currentAttempt++
+                    if (currentAttempt > maxRetries) {
+                        Log.e(TAG, "Max retries reached for word: $word after network error")
+                        throw e
+                    }
+                    Log.w(TAG, "Network error for word: $word. Retry attempt $currentAttempt after ${delayTime}ms...")
+                    delay(delayTime.milliseconds)
+                    delayTime *= 2
+                } else {
+                    Log.e(TAG, "Unexpected exception during fetch for word: $word", e)
+                    throw e
+                }
+            }
+        }
     }
 }
