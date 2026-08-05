@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.coldzz.lexiup.R
 import com.coldzz.lexiup.core.common.isNetworkError
 import com.coldzz.lexiup.ui.theme.LexiUpTheme
+import retrofit2.HttpException
 
 /**
  * A reusable error dialog component that adapts its content based on the type of [error] provided.
@@ -35,27 +36,40 @@ fun LexiUpErrorDialog(
     onExit: () -> Unit,
 ) {
     val isNetworkError = error.isNetworkError()
+    val isServerError = error is HttpException && error.code() in 500..599
 
-    val title = if (isNetworkError) {
-        stringResource(R.string.connection_failed)
-    } else {
-        stringResource(R.string.oops_something_went_wrong)
+    val title = when {
+        isNetworkError -> stringResource(R.string.connection_failed)
+        isServerError -> stringResource(R.string.server_unavailable)
+        else -> stringResource(R.string.oops_something_went_wrong)
     }
 
-    val subTitle = if (isNetworkError) {
-        stringResource(R.string.please_check_your_internet_connection_and_try_again)
-    } else {
-        stringResource(R.string.an_unexpected_error_occurred_please_try_again_later)
+    val subTitle = when {
+        isNetworkError -> stringResource(R.string.please_check_your_internet_connection_and_try_again)
+        isServerError -> stringResource(R.string.server_error_description)
+        else -> stringResource(R.string.an_unexpected_error_occurred_please_try_again_later)
     }
 
-    val iconRes = if (isNetworkError) R.drawable.ic_wifi_off else R.drawable.ic_dangerous
-    val iconDescription = if (isNetworkError) stringResource(R.string.connection_error_icon) else stringResource(
-        R.string.error_icon
-    )
-    val primaryButtonText = if (isNetworkError) stringResource(R.string.retry) else stringResource(R.string.try_again)
-    val secondaryButtonText = if (isNetworkError) stringResource(R.string.exit) else stringResource(
-        R.string.close
-    )
+    val iconRes = when {
+        isNetworkError -> R.drawable.ic_wifi_off
+        isServerError -> R.drawable.ic_dangerous // Or a server specific icon if available
+        else -> R.drawable.ic_dangerous
+    }
+
+    val iconDescription = when {
+        isNetworkError -> stringResource(R.string.connection_error_icon)
+        else -> stringResource(R.string.error_icon)
+    }
+
+    val primaryButtonText = when {
+        isNetworkError || isServerError -> stringResource(R.string.retry)
+        else -> stringResource(R.string.try_again)
+    }
+
+    val secondaryButtonText = when {
+        isNetworkError || isServerError -> stringResource(R.string.exit)
+        else -> stringResource(R.string.close)
+    }
 
     CoreDialogComponent(
         title = title,

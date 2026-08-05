@@ -64,4 +64,14 @@ class CalculateProgressPercentageUseCaseTest {
 
         assertEquals(0.00f, result)
     }
+
+    @Test
+    fun `should return 0 when total words is 0`() {
+        val currentlyLearned = 0
+        val total = 0
+
+        val result = useCase(currentlyLearned, total)
+
+        assertEquals(0.00f, result)
+    }
 }
