@@ -166,6 +166,32 @@ graph TD
 
 ---
 
+## External API
+
+LexiUp uses the **Free Dictionary API** to provide additional word information and pronunciation features.
+
+API source:
+https://dictionaryapi.dev/
+
+The API is used for:
+- Fetching word definitions and meanings
+- Retrieving example sentences
+- Loading phonetic information
+- Providing pronunciation audio files (MP3)
+
+### API Availability Notice
+
+Since LexiUp relies on a third-party free API, some features may be temporarily unavailable if the external service experiences downtime, server issues, or rate limitations.
+
+In case of API unavailability:
+- Previously cached data remains available offline
+- The application handles failed requests
+- Users may retry the request later when the service is restored
+
+The API availability is not controlled by the application and depends on the external service status.
+
+---
+
 ## 🗄 Data Flow Example
 
 **Word List Flow:**
