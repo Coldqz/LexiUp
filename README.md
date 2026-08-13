@@ -15,7 +15,7 @@ The app is based on the **Oxford 5000 word list** and provides an offline-first 
 - 📊 Learning progress tracking (CEFR levels)
 - 🔍 Dictionary integration (definitions, examples, phonetics)
 - 🎧 Audio pronunciation support via API
-- 📴 Fully offline-first after initial database setup
+- 📴 Hybrid Offline-First: Oxford 5000 word list is available immediately; detailed descriptions are fetched on-demand and cached for permanent offline use.
 - 🏆 Overall and CERF categories statistics
 - 🎯 Daily learning limits and review scheduling
 - 🧾 Onboarding flow for new users
@@ -115,7 +115,7 @@ graph TD
 - **Feature-first modular structure**: Code is organized by feature (Words, Blocks, Quiz, Stats) rather than by layer type.
 - **Strict Layering**: Domain layer has zero dependencies on other layers; Data layer depends on Domain.
 - **Unidirectional Data Flow (UDF)**: State flows down, events flow up.
-- **Offline-First**: Room Database acts as the **Single Source of Truth (SSOT)**. Remote data is synced and persisted before being served to the UI.
+- **Hybrid Offline-First**: Room Database acts as the **Single Source of Truth (SSOT)**. Basic word data is pre-populated by deserializing a local JSON asset (`words5k.json`) via WorkManager. Detailed metadata (definitions, examples, phonetics) is fetched from the API upon first view and persisted in Room for offline access.
 - **Efficient Room Projections**: Database queries are optimized using projections to fetch only the data required by the UI models.
 - **Reactive Programming**: Full utilization of Kotlin Coroutines and Flow for asynchronous data streams.
 - **Dependency Injection**: Hilt provides compile-time safe DI across all layers.
@@ -166,9 +166,22 @@ graph TD
 
 ---
 
-## External API
+## 🕸 Data & Networking
 
-LexiUp uses the **Free Dictionary API** to provide additional word information and pronunciation features.
+### Local Data Pre-population
+
+To ensure the app is usable immediately after installation, the core Oxford 5000 word list is stored locally:
+- **Asset Source**: `assets/words5k.json` contains the primary list of words, their CEFR levels, and parts of speech.
+- **Moshi Deserialization**: During the first launch, **Moshi** deserializes this JSON file into Kotlin data objects.
+- **WorkManager**: A background worker (`PopulateDataWorker`) handles the migration of these objects into the Room database, ensuring a smooth, non-blocking UI experience during the initial setup.
+
+### External API Implementation
+
+For rich dictionary content, LexiUp uses the **Free Dictionary API**:
+- **Retrofit**: Used for defining and managing HTTP requests to the dictionary service.
+- **Moshi**: Converts API JSON responses into database-ready entities.
+- **On-Demand Caching**: The Repository layer implements a "fetch-on-view" strategy. When a user opens a word's details, the app checks the Room database; if data is missing, it triggers a Retrofit call, parses the response, and saves it to Room.
+- **Resilience**: Implements retry logic with exponential backoff for transient network errors and handles rate limits.
 
 API source:
 https://dictionaryapi.dev/
@@ -181,14 +194,12 @@ The API is used for:
 
 ### API Availability Notice
 
-Since LexiUp relies on a third-party free API, some features may be temporarily unavailable if the external service experiences downtime, server issues, or rate limitations.
+Since LexiUp relies on a third-party free API, some features may be temporarily unavailable if the external service experiences downtime or rate limitations.
 
 In case of API unavailability:
-- Previously cached data remains available offline
-- The application handles failed requests
-- Users may retry the request later when the service is restored
+- **Offline SSOT**: Previously cached data remains available offline.
+- **Graceful Degradation**: The application handles failed requests using placeholder data or error states, allowing the core quiz functionality to remain usable.
 
-The API availability is not controlled by the application and depends on the external service status.
 
 ---
 
@@ -237,12 +248,12 @@ The architecture allows testing domain logic in isolation without Android depend
 
 ## 🧠 Key Engineering Highlights
 
-- Offline-first architecture with Room as single source of truth
+- Hybrid Offline-First Architecture: Base vocabulary is pre-populated from local assets; detailed metadata is cached on-demand using Room as the single source of truth.
 - Clean separation between Domain, Data, and Presentation layers
 - Lifecycle-aware reactive UI with StateFlow & `collectAsStateWithLifecycle`
 - Efficient Room projections & relational mapping for optimized queries
 - Type-safe navigation implementation using Kotlin Serialization
-- Background database initialization using WorkManager
+- Background database pre-population from JSON assets using WorkManager and Moshi.
 - Modern Kotlin Symbol Processing (KSP) for dependency generation
 - Strong use-case-driven business logic design
 - Interface-based repository abstraction for testability
