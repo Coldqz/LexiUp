@@ -40,10 +40,9 @@ class FakeDataSamples {
         val fakeWordDefinitionSample = WordDetailsUiState(
             word = "Serendipity",
             phonetic = "/ˌsɛ.ɹən.ˈdɪ.pɪ.ti/",
+            enablePlayButton = true,
             partOfSpeech = "Noun",
             level = CerfLevel.C1,
-            enableAmericanButton = true,
-            enableBritishButton = false,
             definitionAndExamples = listOf(
                 DefinitionAndExampleModel(
                     definition = "The occurrence and development of events by chance in a happy or beneficial way.",

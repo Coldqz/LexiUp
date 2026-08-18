@@ -36,12 +36,10 @@ fun WordWithDetails.toUiState(): WordDetailsUiState {
         id = this.id,
         word = this.word,
         phonetic = this.wordDetails?.phonetic.orEmpty(),
+        audioUrl = this.wordDetails?.audioUrl.orEmpty(),
+        enablePlayButton = !this.wordDetails?.audioUrl.isNullOrBlank(),
         partOfSpeech = this.partOfSpeech,
         level = this.level,
-        audioUs = this.wordDetails?.audioUs.orEmpty(),
-        audioUk = this.wordDetails?.audioUk.orEmpty(),
-        enableAmericanButton = !this.wordDetails?.audioUs.isNullOrBlank(),
-        enableBritishButton = !this.wordDetails?.audioUk.isNullOrBlank(),
         definitionAndExamples = this.wordMeaning.map {
             DefinitionAndExampleModel(
                 definition = it.definition,
@@ -57,8 +55,7 @@ fun createPlaceholderDetails(wordId: Int): WordDetailWithMeanings {
         details = WordDetails(
             wordId = wordId,
             phonetic = "",
-            audioUs = null,
-            audioUk = null
+            audioUrl = null
         ),
         meanings = listOf(
             WordMeaning(
@@ -70,20 +67,16 @@ fun createPlaceholderDetails(wordId: Int): WordDetailWithMeanings {
     )
 }
 
-fun WiktionaryResponse.extractAudio(): AudioFilesData {
+fun WiktionaryResponse.extractAudio(): String {
     val allPages = this.query?.pages?.values?.flatMap { page ->
         page.imageInfo.orEmpty()
     }.orEmpty()
 
     val audioUs = allPages.find { it.url?.contains("-us") == true }?.url.orEmpty()
-    val audioUk = allPages.find { it.url?.contains("-uk") == true }?.url.orEmpty()
 
-    return AudioFilesData(
-        audioUs = audioUs,
-        audioUk = audioUk
-    )
+    return audioUs
 }
-fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String, audioData: AudioFilesData): WordDetailWithMeanings {
+fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String, audioUrl: String): WordDetailWithMeanings {
 
     // Api response can be list containing few DictionaryResponse objects,
     // so we need to join them together. Read comments below for .flatMap explanation.
@@ -124,8 +117,7 @@ fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String,
         details = WordDetails(
             wordId = wordId,
             phonetic = this.firstOrNull { !it.phonetic.isNullOrBlank() }?.phonetic.orEmpty(),
-            audioUs = audioData.audioUs,
-            audioUk = audioData.audioUk
+            audioUrl = audioUrl
         ),
         meanings = definitionsForPartOfSpeech.map {
             WordMeaning(

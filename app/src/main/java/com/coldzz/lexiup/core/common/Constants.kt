@@ -1,5 +1,6 @@
 package com.coldzz.lexiup.core.common
 
+import com.coldzz.lexiup.BuildConfig
 import java.time.format.DateTimeFormatter
 
 object Constants {
@@ -17,4 +18,5 @@ object Constants {
     // user id constant, since we have only one user
     const val USER_ID = 0
     const val MIN_NUMBER_OF_WORDS_TO_START_REVIEW_BLOCK_QUIZ = 5
+    const val WIKTIONARY_HEADER = "LexiUpApp/${BuildConfig.VERSION_NAME} (arsen.tsiurak@gmail.com)"
 }

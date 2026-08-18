@@ -108,7 +108,7 @@ object AppModule {
         val client = OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .header("User-Agent", "LexiUpApp/1.0 (arsen.tsiurak@gmail.com)")
+                    .header("User-Agent", Constants.WIKTIONARY_HEADER)
                     .build()
                 chain.proceed(request)
             }

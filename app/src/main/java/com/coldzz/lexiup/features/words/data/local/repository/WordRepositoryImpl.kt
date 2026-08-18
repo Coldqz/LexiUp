@@ -11,7 +11,6 @@ import com.coldzz.lexiup.features.words.data.local.projection.PickQuizWordsData
 import com.coldzz.lexiup.features.words.data.local.projection.WordWithDetails
 import com.coldzz.lexiup.features.words.data.local.projection.WordsWithReviewBlockIndicator
 import com.coldzz.lexiup.features.words.domain.repository.WordRepository
-import com.coldzz.lexiup.features.words.presentation.AudioFilesData
 import com.coldzz.lexiup.features.words.presentation.createPlaceholderDetails
 import com.coldzz.lexiup.features.words.presentation.extractAudio
 import com.coldzz.lexiup.features.words.presentation.toDatabaseEntity
@@ -153,8 +152,12 @@ class WordRepositoryImpl @Inject constructor(
                 }
 
                 // if response is null then we set empty strings as placeholders to disable audio buttons.
-                val audioData = wiktionaryResponse?.extractAudio() ?: AudioFilesData("", "")
-                val completeResponse = dictionaryResponse.toDatabaseEntity(wordId, partOfSpeech, audioData)
+                val audioUrl = wiktionaryResponse?.extractAudio() ?: ""
+                val completeResponse = dictionaryResponse.toDatabaseEntity(
+                    wordId,
+                    partOfSpeech,
+                    audioUrl
+                )
 
                 dao.insertApiResponse(completeResponse.details, completeResponse.meanings)
                 return
