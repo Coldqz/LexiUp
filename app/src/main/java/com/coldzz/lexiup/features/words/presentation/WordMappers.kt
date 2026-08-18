@@ -1,6 +1,7 @@
 package com.coldzz.lexiup.features.words.presentation
 
 import com.coldzz.lexiup.core.data.remote.model.DictionaryResponse
+import com.coldzz.lexiup.core.data.remote.model.WiktionaryResponse
 import com.coldzz.lexiup.features.blocks.data.local.projection.WordDetailWithMeanings
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import com.coldzz.lexiup.features.words.data.local.entities.WordDetails
@@ -69,17 +70,26 @@ fun createPlaceholderDetails(wordId: Int): WordDetailWithMeanings {
     )
 }
 
-fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String): WordDetailWithMeanings {
+fun WiktionaryResponse.extractAudio(): AudioFilesData {
+    val allPages = this.query?.pages?.values?.flatMap { page ->
+        page.imageInfo.orEmpty()
+    }.orEmpty()
+
+    val audioUs = allPages.find { it.url?.contains("-us") == true }?.url.orEmpty()
+    val audioUk = allPages.find { it.url?.contains("-uk") == true }?.url.orEmpty()
+
+    return AudioFilesData(
+        audioUs = audioUs,
+        audioUk = audioUk
+    )
+}
+fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String, audioData: AudioFilesData): WordDetailWithMeanings {
 
     // Api response can be list containing few DictionaryResponse objects,
     // so we need to join them together. Read comments below for .flatMap explanation.
     val allMeanings = this.flatMap { dictionaryResponse ->
         dictionaryResponse.meanings
     }
-
-    val allPhonetics = this.flatMap { it.phonetics }
-    val audioUs = allPhonetics.find { it.audio?.contains("-us") == true }?.audio
-    val audioUk = allPhonetics.find { it.audio?.contains("-uk") == true }?.audio
 
     val definitionsForPartOfSpeech = allMeanings
         // here we filter database response by part of speech
@@ -114,8 +124,8 @@ fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String)
         details = WordDetails(
             wordId = wordId,
             phonetic = this.firstOrNull { !it.phonetic.isNullOrBlank() }?.phonetic.orEmpty(),
-            audioUs = audioUs,
-            audioUk = audioUk
+            audioUs = audioData.audioUs,
+            audioUk = audioData.audioUk
         ),
         meanings = definitionsForPartOfSpeech.map {
             WordMeaning(
