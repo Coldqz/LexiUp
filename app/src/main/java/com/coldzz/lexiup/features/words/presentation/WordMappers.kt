@@ -1,6 +1,7 @@
 package com.coldzz.lexiup.features.words.presentation
 
 import com.coldzz.lexiup.core.data.remote.model.DictionaryResponse
+import com.coldzz.lexiup.core.data.remote.model.WiktionaryResponse
 import com.coldzz.lexiup.features.blocks.data.local.projection.WordDetailWithMeanings
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import com.coldzz.lexiup.features.words.data.local.entities.WordDetails
@@ -35,12 +36,10 @@ fun WordWithDetails.toUiState(): WordDetailsUiState {
         id = this.id,
         word = this.word,
         phonetic = this.wordDetails?.phonetic.orEmpty(),
+        audioUrl = this.wordDetails?.audioUrl.orEmpty(),
+        enablePlayButton = !this.wordDetails?.audioUrl.isNullOrBlank(),
         partOfSpeech = this.partOfSpeech,
         level = this.level,
-        audioUs = this.wordDetails?.audioUs.orEmpty(),
-        audioUk = this.wordDetails?.audioUk.orEmpty(),
-        enableAmericanButton = !this.wordDetails?.audioUs.isNullOrBlank(),
-        enableBritishButton = !this.wordDetails?.audioUk.isNullOrBlank(),
         definitionAndExamples = this.wordMeaning.map {
             DefinitionAndExampleModel(
                 definition = it.definition,
@@ -56,8 +55,7 @@ fun createPlaceholderDetails(wordId: Int): WordDetailWithMeanings {
         details = WordDetails(
             wordId = wordId,
             phonetic = "",
-            audioUs = null,
-            audioUk = null
+            audioUrl = null
         ),
         meanings = listOf(
             WordMeaning(
@@ -69,17 +67,22 @@ fun createPlaceholderDetails(wordId: Int): WordDetailWithMeanings {
     )
 }
 
-fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String): WordDetailWithMeanings {
+fun WiktionaryResponse.extractAudio(): String {
+    val allPages = this.query?.pages?.values?.flatMap { page ->
+        page.imageInfo.orEmpty()
+    }.orEmpty()
+
+    val audioUs = allPages.find { it.url?.contains("-us") == true }?.url.orEmpty()
+
+    return audioUs
+}
+fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String, audioUrl: String): WordDetailWithMeanings {
 
     // Api response can be list containing few DictionaryResponse objects,
     // so we need to join them together. Read comments below for .flatMap explanation.
     val allMeanings = this.flatMap { dictionaryResponse ->
         dictionaryResponse.meanings
     }
-
-    val allPhonetics = this.flatMap { it.phonetics }
-    val audioUs = allPhonetics.find { it.audio?.contains("-us") == true }?.audio
-    val audioUk = allPhonetics.find { it.audio?.contains("-uk") == true }?.audio
 
     val definitionsForPartOfSpeech = allMeanings
         // here we filter database response by part of speech
@@ -114,8 +117,7 @@ fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String)
         details = WordDetails(
             wordId = wordId,
             phonetic = this.firstOrNull { !it.phonetic.isNullOrBlank() }?.phonetic.orEmpty(),
-            audioUs = audioUs,
-            audioUk = audioUk
+            audioUrl = audioUrl
         ),
         meanings = definitionsForPartOfSpeech.map {
             WordMeaning(

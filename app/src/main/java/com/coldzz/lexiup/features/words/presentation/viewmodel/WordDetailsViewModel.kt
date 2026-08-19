@@ -1,12 +1,15 @@
 package com.coldzz.lexiup.features.words.presentation.viewmodel
 
+import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.coldzz.lexiup.core.common.Constants
 import com.coldzz.lexiup.core.common.ResultDataState
 import com.coldzz.lexiup.core.common.ResultUiState
 import com.coldzz.lexiup.core.navigation.NavRoutes
@@ -16,6 +19,7 @@ import com.coldzz.lexiup.features.words.presentation.WordDetailsEvent
 import com.coldzz.lexiup.features.words.presentation.WordDetailsUiState
 import com.coldzz.lexiup.features.words.presentation.toUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,7 +37,8 @@ private const val TAG = "WordDetailsViewModel"
 class WordDetailsViewModel @Inject constructor(
     private val wordUseCases: WordUseCases,
     private val blockUseCases: WordBlockUseCases,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private var getDataJob: Job? = null
@@ -51,38 +56,8 @@ class WordDetailsViewModel @Inject constructor(
         loadData()
     }
 
-    fun playBritishAudio(audioUrl: String) {
-        playAudio(
-            audioUrl = audioUrl,
-            actionOnStartLoading = {
-                _uiState.update { oldState ->
-                    if (oldState is ResultUiState.Success) {
-                        oldState.copy(
-                            data = oldState.data.copy(
-                                isUkAudioLoading = true
-                            )
-                        )
-                    } else {
-                        oldState
-                    }
-                }
-            },
-            actionOnLoaded = {
-                _uiState.update { oldState ->
-                    if (oldState is ResultUiState.Success) {
-                        oldState.copy(
-                            data = oldState.data.copy(
-                                isUkAudioLoading = false
-                            )
-                        )
-                    } else oldState
-                }
-            }
-        )
-    }
-
-    fun playAmericanAudio(audioUrl: String) {
-        playAudio(
+    fun playAudio(audioUrl: String) {
+        playAudioSetup(
             audioUrl = audioUrl,
             actionOnStartLoading = {
                 // start loading indicator
@@ -90,7 +65,7 @@ class WordDetailsViewModel @Inject constructor(
                     if (oldState is ResultUiState.Success) {
                         oldState.copy(
                             data = oldState.data.copy(
-                                isUsAudioLoading = true
+                                isAudioLoading = true
                             )
                         )
                     } else {
@@ -104,7 +79,7 @@ class WordDetailsViewModel @Inject constructor(
                     if (oldState is ResultUiState.Success) {
                         oldState.copy(
                             data = oldState.data.copy(
-                                isUsAudioLoading = false
+                                isAudioLoading = false
                             )
                         )
                     } else oldState
@@ -113,7 +88,7 @@ class WordDetailsViewModel @Inject constructor(
         )
     }
 
-    private fun playAudio(
+    private fun playAudioSetup(
         audioUrl: String,
         actionOnStartLoading: () -> Unit,
         actionOnLoaded: () -> Unit
@@ -140,7 +115,8 @@ class WordDetailsViewModel @Inject constructor(
                 )
                 //action on start loading
                 actionOnStartLoading()
-                setDataSource(audioUrl)
+                val headers = mapOf("User-Agent" to Constants.WIKTIONARY_HEADER)
+                setDataSource(context, audioUrl.toUri(), headers)
                 setOnPreparedListener {
                     audioJob = viewModelScope.launch {
                         // UX delay to prevent ui flashing

@@ -53,11 +53,8 @@ fun WordDetailsScreen(
                 actionRemoveFromReviewBlock = { wordId ->
                     wordDetailsViewModel.removeWordFromReviewBlock(wordId)
                 },
-                actionOnAmericanButton = { audioUrl ->
-                    wordDetailsViewModel.playAmericanAudio(audioUrl)
-                },
-                actionOnBritishButton = { audioUrl ->
-                    wordDetailsViewModel.playBritishAudio(audioUrl)
+                actionOnPlayButton = { audioUrl ->
+                    wordDetailsViewModel.playAudio(audioUrl)
                 }
             )
         }

@@ -20,6 +20,5 @@ data class WordDetails(
     @PrimaryKey
     @ColumnInfo(name = "word_id") val wordId: Int,
     val phonetic: String,
-    @ColumnInfo(name = "audio_us") val audioUs: String?,
-    @ColumnInfo(name = "audio_uk") val audioUk: String?,
+    @ColumnInfo(name = "audio_us") val audioUrl: String?,
 )

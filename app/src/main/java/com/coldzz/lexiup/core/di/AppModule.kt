@@ -14,6 +14,7 @@ import com.coldzz.lexiup.core.data.datastore.DataStoreManager
 import com.coldzz.lexiup.core.data.datastore.DataStoreManagerImpl
 import com.coldzz.lexiup.core.data.local.AppDatabase
 import com.coldzz.lexiup.core.data.remote.DictionaryApi
+import com.coldzz.lexiup.core.data.remote.WiktionaryApi
 import com.coldzz.lexiup.core.workers.PopulateDataWorker
 import com.coldzz.lexiup.features.blocks.data.local.repository.WordBlockRepositoryImpl
 import com.coldzz.lexiup.features.blocks.domain.WordBlockRepository
@@ -29,6 +30,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -61,8 +63,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWordRepository(database: AppDatabase, dictionaryApi: DictionaryApi): WordRepository {
-        return WordRepositoryImpl(database.wordDao(), dictionaryApi)
+    fun provideWordRepository(database: AppDatabase, dictionaryApi: DictionaryApi, wiktionaryApi: WiktionaryApi): WordRepository {
+        return WordRepositoryImpl(database.wordDao(),dictionaryApi, wiktionaryApi)
     }
 
     @Provides
@@ -91,7 +93,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    @DictionaryRetrofit
+    fun provideDictionaryRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://api.dictionaryapi.dev/")
             .addConverterFactory(MoshiConverterFactory.create())
@@ -100,7 +103,33 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDictionaryApi(retrofit: Retrofit): DictionaryApi {
+    @WiktionaryRetrofit
+    fun provideWiktionaryRetrofit(): Retrofit {
+        val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", Constants.WIKTIONARY_HEADER)
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl("https://en.wiktionary.org/")
+            .client(client)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWiktionaryApi(@WiktionaryRetrofit retrofit: Retrofit): WiktionaryApi {
+        return retrofit.create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDictionaryApi(@DictionaryRetrofit retrofit: Retrofit): DictionaryApi {
         return retrofit.create()
     }
 

@@ -1,11 +1,10 @@
 package com.coldzz.lexiup.features.words.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,7 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,8 +42,7 @@ import com.coldzz.lexiup.ui.theme.LexiUpTheme
 fun WordDetailsComponent(
     modifier: Modifier = Modifier,
     uiState: WordDetailsUiState,
-    actionOnAmericanButton: (String) -> Unit,
-    actionOnBritishButton: (String) -> Unit,
+    actionOnPlayButton: (String) -> Unit,
     onBackButtonAction: () -> Unit,
     actionAddToReviewBlock: (Int) -> Unit,
     actionRemoveFromReviewBlock: (Int) -> Unit
@@ -96,100 +94,50 @@ fun WordDetailsComponent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(
-                        text = uiState.word,
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                    CerfLevelIconComponent(level = uiState.level)
-                }
-            }
-            item {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = uiState.phonetic,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontStyle = FontStyle.Italic
-                    )
-                    Text(
-                        text = " · ",
-                        fontWeight = FontWeight.Bold
-                    )
-                    PartOfSpeechIconComponent(partOfSpeech = uiState.partOfSpeech)
-                }
-            }
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    FilledTonalButton(
-                        onClick = { actionOnAmericanButton(uiState.audioUs) },
-                        enabled = uiState.enableAmericanButton
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        FilledTonalIconButton(
+                            onClick = { actionOnPlayButton(uiState.audioUrl) },
+                            enabled = uiState.enablePlayButton
                         ) {
-                            Text(
-                                text = stringResource(R.string.us),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.size(24.dp)
-                            ) {
-                                if (uiState.isUsAudioLoading) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(18.dp),
-                                        strokeWidth = 2.dp,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                } else {
-                                    Icon(
-                                        painter = painterResource(R.drawable.ic_speaker),
-                                        contentDescription = stringResource(R.string.play_american_pronunciation),
-                                    )
-                                }
+                            if (uiState.isAudioLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                            } else {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_speaker),
+                                    contentDescription = stringResource(R.string.play_american_pronunciation),
+                                )
                             }
                         }
+                        Text(
+                            text = uiState.word,
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        CerfLevelIconComponent(level = uiState.level)
                     }
-                    Spacer(modifier = Modifier.size(8.dp))
-                    FilledTonalButton(
-                        onClick = { actionOnBritishButton(uiState.audioUk) },
-                        enabled = uiState.enableBritishButton
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Text(
-                                text = stringResource(R.string.uk),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.size(24.dp)
-                            ) {
-                                if (uiState.isUkAudioLoading) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(18.dp),
-                                        strokeWidth = 2.dp,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                } else {
-                                    Icon(
-                                        painter = painterResource(R.drawable.ic_speaker),
-                                        contentDescription = stringResource(R.string.play_british_pronunciation),
-                                    )
-                                }
-                            }
-                        }
+                        Text(
+                            text = uiState.phonetic,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontStyle = FontStyle.Italic
+                        )
+                        Text(
+                            text = " · ",
+                            fontWeight = FontWeight.Bold
+                        )
+                        PartOfSpeechIconComponent(partOfSpeech = uiState.partOfSpeech)
                     }
                 }
             }
@@ -228,8 +176,7 @@ private fun WordDetailComponentPreview() {
             onBackButtonAction = {},
             actionRemoveFromReviewBlock = {},
             actionAddToReviewBlock = {},
-            actionOnAmericanButton = {},
-            actionOnBritishButton = {}
+            actionOnPlayButton = {}
         )
     }
 }

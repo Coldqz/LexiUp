@@ -4,6 +4,7 @@ import android.util.Log
 import com.coldzz.lexiup.core.common.ResultDataState
 import com.coldzz.lexiup.core.common.isNetworkError
 import com.coldzz.lexiup.core.data.remote.DictionaryApi
+import com.coldzz.lexiup.core.data.remote.WiktionaryApi
 import com.coldzz.lexiup.features.words.data.local.WordDao
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
 import com.coldzz.lexiup.features.words.data.local.projection.PickQuizWordsData
@@ -11,6 +12,7 @@ import com.coldzz.lexiup.features.words.data.local.projection.WordWithDetails
 import com.coldzz.lexiup.features.words.data.local.projection.WordsWithReviewBlockIndicator
 import com.coldzz.lexiup.features.words.domain.repository.WordRepository
 import com.coldzz.lexiup.features.words.presentation.createPlaceholderDetails
+import com.coldzz.lexiup.features.words.presentation.extractAudio
 import com.coldzz.lexiup.features.words.presentation.toDatabaseEntity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +27,8 @@ private const val TAG = "WordRepositoryImpl"
 
 class WordRepositoryImpl @Inject constructor(
     private val dao: WordDao,
-    private val dictionaryApi: DictionaryApi
+    private val dictionaryApi: DictionaryApi,
+    private val wiktionaryApi: WiktionaryApi
 ) : WordRepository {
 
     override suspend fun getWordsCount(): Flow<Int> {
@@ -118,6 +121,9 @@ class WordRepositoryImpl @Inject constructor(
         return dao.getRandomWords(limit, reviewBlockId, avoidIds)
     }
 
+    /**
+     * This function tries to download data with exponential backoff, and cache it
+     * */
     private suspend fun fetchAndCacheWordDetails(
         word: String,
         wordId: Int,
@@ -129,8 +135,31 @@ class WordRepositoryImpl @Inject constructor(
 
         while (currentAttempt <= maxRetries) {
             try {
-                val response = dictionaryApi.getWord(word.trim()).toDatabaseEntity(wordId, partOfSpeech)
-                dao.insertApiResponse(response.details, response.meanings)
+                // download dictionary data, when this cause exception then we proceed to catch block
+                val dictionaryResponse = dictionaryApi.getWord(word.trim())
+
+                /*
+                * Download audio data.
+                * We do it only when we have successfully got dictionary response,
+                * because we do not need audio without definitions(therefore we don't make any unecessary api requests).
+                * */
+                val wiktionaryResponse = try {
+                    wiktionaryApi.getFilesData(word.trim())
+                } catch (e: Exception) {
+                    Log.e(TAG, "Unexpected exception during audio fetch for word: $word", e)
+                    // if it causes exception then we return null
+                    null
+                }
+
+                // if response is null then we set empty strings as placeholders to disable audio buttons.
+                val audioUrl = wiktionaryResponse?.extractAudio() ?: ""
+                val completeResponse = dictionaryResponse.toDatabaseEntity(
+                    wordId,
+                    partOfSpeech,
+                    audioUrl
+                )
+
+                dao.insertApiResponse(completeResponse.details, completeResponse.meanings)
                 return
             } catch (e: HttpException) {
                 val code = e.code()
