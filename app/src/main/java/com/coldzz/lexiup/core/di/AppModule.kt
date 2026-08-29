@@ -13,7 +13,7 @@ import com.coldzz.lexiup.core.common.Constants
 import com.coldzz.lexiup.core.data.datastore.DataStoreManager
 import com.coldzz.lexiup.core.data.datastore.DataStoreManagerImpl
 import com.coldzz.lexiup.core.data.local.AppDatabase
-import com.coldzz.lexiup.core.data.remote.DictionaryApi
+import com.coldzz.lexiup.core.data.remote.FreeDictionaryApi
 import com.coldzz.lexiup.core.data.remote.WiktionaryApi
 import com.coldzz.lexiup.core.workers.PopulateDataWorker
 import com.coldzz.lexiup.features.blocks.data.local.repository.WordBlockRepositoryImpl
@@ -63,8 +63,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWordRepository(database: AppDatabase, dictionaryApi: DictionaryApi, wiktionaryApi: WiktionaryApi): WordRepository {
-        return WordRepositoryImpl(database.wordDao(),dictionaryApi, wiktionaryApi)
+    fun provideWordRepository(database: AppDatabase, wiktionaryApi: WiktionaryApi, freeDictionaryApi: FreeDictionaryApi): WordRepository {
+        return WordRepositoryImpl(database.wordDao(), wiktionaryApi, freeDictionaryApi)
     }
 
     @Provides
@@ -93,13 +93,20 @@ object AppModule {
 
     @Provides
     @Singleton
-    @DictionaryRetrofit
-    fun provideDictionaryRetrofit(): Retrofit {
+    @FreeDictionaryRetrofit
+    fun provideFreeDictionaryRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.dictionaryapi.dev/")
+            .baseUrl("https://freedictionaryapi.com/")
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideNewDictionaryApi(@FreeDictionaryRetrofit retrofit: Retrofit): FreeDictionaryApi {
+        return retrofit.create()
+    }
+
 
     @Provides
     @Singleton
@@ -124,12 +131,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideWiktionaryApi(@WiktionaryRetrofit retrofit: Retrofit): WiktionaryApi {
-        return retrofit.create()
-    }
-
-    @Provides
-    @Singleton
-    fun provideDictionaryApi(@DictionaryRetrofit retrofit: Retrofit): DictionaryApi {
         return retrofit.create()
     }
 

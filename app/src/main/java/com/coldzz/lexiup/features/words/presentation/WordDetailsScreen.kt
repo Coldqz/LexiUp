@@ -42,7 +42,6 @@ fun WordDetailsScreen(
             LoadingStateIndicator()
         }
 
-
         is ResultUiState.Success -> {
             WordDetailsComponent(
                 uiState = (uiState as ResultUiState.Success<WordDetailsUiState>).data,
