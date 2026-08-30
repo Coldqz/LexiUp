@@ -3,7 +3,7 @@ package com.coldzz.lexiup.features.words.data.local.repository
 import android.util.Log
 import com.coldzz.lexiup.core.common.ResultDataState
 import com.coldzz.lexiup.core.common.isNetworkError
-import com.coldzz.lexiup.core.data.remote.DictionaryApi
+import com.coldzz.lexiup.core.data.remote.FreeDictionaryApi
 import com.coldzz.lexiup.core.data.remote.WiktionaryApi
 import com.coldzz.lexiup.features.words.data.local.WordDao
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
@@ -27,8 +27,8 @@ private const val TAG = "WordRepositoryImpl"
 
 class WordRepositoryImpl @Inject constructor(
     private val dao: WordDao,
-    private val dictionaryApi: DictionaryApi,
-    private val wiktionaryApi: WiktionaryApi
+    private val wiktionaryApi: WiktionaryApi,
+    private val freeDictionaryApi: FreeDictionaryApi
 ) : WordRepository {
 
     override suspend fun getWordsCount(): Flow<Int> {
@@ -136,7 +136,9 @@ class WordRepositoryImpl @Inject constructor(
         while (currentAttempt <= maxRetries) {
             try {
                 // download dictionary data, when this cause exception then we proceed to catch block
-                val dictionaryResponse = dictionaryApi.getWord(word.trim())
+//                val dictionaryResponse = dictionaryApi.getWord(word.trim())
+
+                val freeDictionaryResponse = freeDictionaryApi.getWord(word.trim())
 
                 /*
                 * Download audio data.
@@ -151,14 +153,16 @@ class WordRepositoryImpl @Inject constructor(
                     null
                 }
 
-                // if response is null then we set empty strings as placeholders to disable audio buttons.
-                val audioUrl = wiktionaryResponse?.extractAudio() ?: ""
-                val completeResponse = dictionaryResponse.toDatabaseEntity(
+                // if audio response is null then we set empty strings as placeholders to disable audio buttons.
+                val audioUrl = wiktionaryResponse?.extractAudio()
+
+                // if there is no entries then function return placeholder
+                val completeResponse = freeDictionaryResponse.toDatabaseEntity(
                     wordId,
+                    word,
                     partOfSpeech,
                     audioUrl
                 )
-
                 dao.insertApiResponse(completeResponse.details, completeResponse.meanings)
                 return
             } catch (e: HttpException) {

@@ -1,6 +1,6 @@
 package com.coldzz.lexiup.features.words.presentation
 
-import com.coldzz.lexiup.core.data.remote.model.DictionaryResponse
+import com.coldzz.lexiup.core.data.remote.model.FreeDictionaryResponse
 import com.coldzz.lexiup.core.data.remote.model.WiktionaryResponse
 import com.coldzz.lexiup.features.blocks.data.local.projection.WordDetailWithMeanings
 import com.coldzz.lexiup.features.words.data.local.entities.OxfordWords
@@ -31,6 +31,26 @@ fun WordsWithReviewBlockIndicator.toUiModel(): WordItemUiModel {
     )
 }
 
+/*
+* This creates empty placeholder in case there is no data in api. Though we can insert audio if it is available.
+* */
+fun createPlaceholderDetails(wordId: Int, audio: String? = null): WordDetailWithMeanings {
+    return WordDetailWithMeanings(
+        details = WordDetails(
+            wordId = wordId,
+            phonetic = "",
+            audioUrl = audio
+        ),
+        meanings = listOf(
+            WordMeaning(
+                wordId = wordId,
+                definition = "No definition found for this word in dictionary.",
+                example = ""
+            )
+        )
+    )
+}
+
 fun WordWithDetails.toUiState(): WordDetailsUiState {
     return WordDetailsUiState(
         id = this.id,
@@ -50,76 +70,86 @@ fun WordWithDetails.toUiState(): WordDetailsUiState {
     )
 }
 
-fun createPlaceholderDetails(wordId: Int): WordDetailWithMeanings {
-    return WordDetailWithMeanings(
-        details = WordDetails(
-            wordId = wordId,
-            phonetic = "",
-            audioUrl = null
-        ),
-        meanings = listOf(
-            WordMeaning(
-                wordId = wordId,
-                definition = "No definition found for this word in dictionary.",
-                example = ""
-            )
-        )
-    )
-}
-
-fun WiktionaryResponse.extractAudio(): String {
+/**
+ * Returns null if no audio was found.
+ * */
+fun WiktionaryResponse.extractAudio(): String? {
     val allPages = this.query?.pages?.values?.flatMap { page ->
         page.imageInfo.orEmpty()
     }.orEmpty()
 
-    val audioUs = allPages.find { it.url?.contains("-us") == true }?.url.orEmpty()
+    val audioUs = allPages.find { it.url?.contains("-us") == true }?.url
 
     return audioUs
 }
-fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String, audioUrl: String): WordDetailWithMeanings {
 
-    // Api response can be list containing few DictionaryResponse objects,
-    // so we need to join them together. Read comments below for .flatMap explanation.
-    val allMeanings = this.flatMap { dictionaryResponse ->
-        dictionaryResponse.meanings
+/**
+ * This function map whole api response to Database format.
+ * It chooses what data should we use as definitions and examples.
+ * @param [audioUrl] keep it null if there is no audio file available
+ * */
+fun FreeDictionaryResponse.toDatabaseEntity(
+    wordId: Int,
+    word: String,
+    partOfSpeech: String,
+    audioUrl: String? = null
+): WordDetailWithMeanings {
+
+    // if api response is empty or null then add placeholder and quit function
+    if (this.entries.isNullOrEmpty()) {
+        return createPlaceholderDetails(wordId, audioUrl)
     }
 
-    val definitionsForPartOfSpeech = allMeanings
-        // here we filter database response by part of speech
-        .filter { it.partOfSpeech == partOfSpeech }
-        /*
-        * We cut out only definitions from the object, and we get single List<DefinitionsItem>.
-        *
-        * Btw if we use normal .map function instead of .flatMap here we will get List<List<DefinitionsItem>>.
-        * This is because every DictionaryResponse object have List<MeaningsItem> with List<DefinitionsItem> inside,
-        * and if we extract our definitions from List<MeaningsItem> with .map we will get list of definitions,
-        * and since every definition is list then we will get list of lists i.e. List<List<DefinitionsItem>>.
-        * */
-        .flatMap { it.definitions }
-        // then we map our List<DefinitionsItem> to uiModel
-        .map {
-            DefinitionAndExampleModel(
-                definition = it.definition.orEmpty(),
-                example = it.example.orEmpty()
-            )
-        }
-        // if list it empty it means we have no definitions, so we just add placeholder
-        .ifEmpty {
-            listOf(
-                DefinitionAndExampleModel(
-                    definition = "No definitions for this part of speech were found",
-                    example = ""
+    val correctPartOfSpeech = partOfSpeechConverter(word, partOfSpeech)
+
+    // pick part of speech we need, if there is no part of speech we need then return placeholder
+    val correctEntry = this.entries.firstOrNull() { item ->
+        correctPartOfSpeech == item.partOfSpeech
+    } ?: return createPlaceholderDetails(wordId, audioUrl)
+
+    if (correctEntry.senses.isNullOrEmpty()) {
+        return createPlaceholderDetails(wordId, audioUrl)
+    }
+
+    val definitionAndExampleModel = correctEntry.senses.flatMap { senseEntry ->
+        when {
+            // If the sense has examples then use the sense itself
+            !senseEntry.examples.isNullOrEmpty() -> {
+                listOf(
+                    DefinitionAndExampleModel(
+                        definition = senseEntry.definition.orEmpty(),
+                        example = senseEntry.examples.firstOrNull().orEmpty()
+                    )
                 )
-            )
+            }
+            // If the sense has no examples but has subsenses, use subsenses instead
+            !senseEntry.subsenses.isNullOrEmpty() -> {
+                senseEntry.subsenses.map { subSenseEntry ->
+                    DefinitionAndExampleModel(
+                        definition = subSenseEntry.definition.orEmpty(),
+                        example = subSenseEntry.examples?.firstOrNull().orEmpty()
+                    )
+                }
+            }
+            // Otherwise, use sense without examples
+            else -> {
+                listOf(
+                    DefinitionAndExampleModel(
+                        definition = senseEntry.definition.orEmpty(),
+                        example = ""
+                    )
+                )
+            }
         }
-    // and finally we create our WordDetailWithMeanings object with necessary data and insert it into the DB
+    }
+
     return WordDetailWithMeanings(
         details = WordDetails(
             wordId = wordId,
-            phonetic = this.firstOrNull { !it.phonetic.isNullOrBlank() }?.phonetic.orEmpty(),
+            phonetic = correctEntry.pronunciations?.firstOrNull()?.transcription.orEmpty(),
             audioUrl = audioUrl
         ),
-        meanings = definitionsForPartOfSpeech.map {
+        meanings = definitionAndExampleModel.map {
             WordMeaning(
                 wordId = wordId,
                 definition = it.definition,
@@ -127,4 +157,28 @@ fun List<DictionaryResponse>.toDatabaseEntity(wordId: Int, partOfSpeech: String,
             )
         }
     )
+}
+
+/**
+ * Oxford 5000 list (which is our database core) have different part of speech naming that is in FreeDictionary API, most are the same but not all of them.
+ * In this function we manually convert them so that we can find them in api response.
+ * */
+private fun partOfSpeechConverter(word: String, partOfSpeech: String): String {
+    // converting part of speech to different naming
+    val result = when (partOfSpeech) {
+        "adjective", "adverb", "conjunction", "determiner", "noun", "preposition", "pronoun", "verb" -> partOfSpeech
+        "auxiliary verb", "linking verb", "modal verb" -> "verb"
+        "number" -> "numeral"
+        "ordinal number" -> "adjective"
+        "exclamation" -> "interjection"
+        "infinitive marker" -> "particle"
+        else -> partOfSpeech
+    }
+    // here we manually handle unique exceptions
+    return when {
+        // somehow word "no" have no interjection part of speech but does have particle,
+        // so we manually need to change it for our api mapping function
+        word == "no" && partOfSpeech == "exclamation" -> "particle"
+        else -> result
+    }
 }
