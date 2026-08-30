@@ -14,7 +14,7 @@ The app is based on the **Oxford 5000 word list** and provides an offline-first 
 - 📦 Word blocks (minimum 10 words per block)
 - 📊 Learning progress tracking (CEFR levels)
 - 🔍 Dictionary integration (definitions, examples, phonetics)
-- 🎧 Audio pronunciation support via API
+- 🎧 Audio pronunciation support via Wiktionary API
 - 📴 Hybrid Offline-First: Oxford 5000 word list is available immediately; detailed descriptions are fetched on-demand and cached for permanent offline use.
 - 🏆 Overall and CERF categories statistics
 - 🎯 Daily learning limits and review scheduling
@@ -71,7 +71,7 @@ graph TD
         RImpl["Repository Implementations"]
         subgraph Data_Sources ["Data Sources"]
             DB[("Room Database (SSOT)")]
-            API["Retrofit API (Dictionary)"]
+            API["Retrofit APIs (Dictionary & Wiktionary)"]
             DS["DataStore (Onboarding)"]
         end
     end
@@ -115,7 +115,7 @@ graph TD
 - **Feature-first modular structure**: Code is organized by feature (Words, Blocks, Quiz, Stats) rather than by layer type.
 - **Strict Layering**: Domain layer has zero dependencies on other layers; Data layer depends on Domain.
 - **Unidirectional Data Flow (UDF)**: State flows down, events flow up.
-- **Hybrid Offline-First**: Room Database acts as the **Single Source of Truth (SSOT)**. Basic word data is pre-populated by deserializing a local JSON asset (`words5k.json`) via WorkManager. Detailed metadata (definitions, examples, phonetics) is fetched from the API upon first view and persisted in Room for offline access.
+- **Hybrid Offline-First**: Room Database acts as the **Single Source of Truth (SSOT)**. Basic word data is pre-populated by deserializing a local JSON asset (`words5k.json`) via WorkManager. Detailed metadata (definitions, examples, phonetics) is fetched from the APIs upon first view and persisted in Room for offline access.
 - **Efficient Room Projections**: Database queries are optimized using projections to fetch only the data required by the UI models.
 - **Reactive Programming**: Full utilization of Kotlin Coroutines and Flow for asynchronous data streams.
 - **Dependency Injection**: Hilt provides compile-time safe DI across all layers.
@@ -177,20 +177,27 @@ To ensure the app is usable immediately after installation, the core Oxford 5000
 
 ### External API Implementation
 
-For rich dictionary content, LexiUp uses the **Free Dictionary API**:
-- **Retrofit**: Used for defining and managing HTTP requests to the dictionary service.
+For rich dictionary content, LexiUp uses the **Free Dictionary API** and **Wiktionary API**:
+- **Retrofit**: Used for defining and managing HTTP requests to the dictionary services.
 - **Moshi**: Converts API JSON responses into database-ready entities.
-- **On-Demand Caching**: The Repository layer implements a "fetch-on-view" strategy. When a user opens a word's details, the app checks the Room database; if data is missing, it triggers a Retrofit call, parses the response, and saves it to Room.
+- **On-Demand Caching**: The Repository layer implements a "fetch-on-view" strategy. When a user opens a word's details, the app checks the Room database; if data is missing, it triggers Retrofit calls, parses the responses, and saves them to Room.
 - **Resilience**: Implements retry logic with exponential backoff for transient network errors and handles rate limits.
 
-API source:
-https://dictionaryapi.dev/
+LexiUp uses the **Free Dictionary API** to provide dictionary definitions, examples, and other word information. While the Free Dictionary API sources its data from **Wiktionary**, it is used for definitions because its JSON structure is significantly more convenient for implementation. However, as it does not provide audio files, LexiUp fetches pronunciation audio (MP3) directly from the **Wiktionary API**.
 
-The API is used for:
-- Fetching word definitions and meanings
-- Retrieving example sentences
-- Loading phonetic information
-- Providing pronunciation audio files (MP3)
+The dictionary data is sourced from Wiktionary and is available under the CC BY-SA 4.0 license.
+
+Free Dictionary API: https://freedictionaryapi.com/
+
+Wiktionary: https://www.wiktionary.org/
+
+License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+
+The APIs are used for:
+- Fetching word definitions and meanings (Free Dictionary API)
+- Retrieving example sentences (Free Dictionary API)
+- Loading phonetic information (Free Dictionary API)
+- Providing pronunciation audio files (MP3) (Wiktionary API - fetched directly)
 
 ### API Availability Notice
 
